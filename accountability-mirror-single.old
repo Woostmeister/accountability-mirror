@@ -179,50 +179,6 @@
             color: var(--text-primary);
         }
 
-        .weekly-summary {
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border);
-        }
-
-        .weekly-summary h3 {
-            font-size: 1rem;
-            margin-bottom: 0.75rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 600;
-        }
-
-        .week-dates {
-            font-size: 0.875rem;
-            color: var(--text-tertiary);
-            margin-bottom: 1rem;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .weekly-stats {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .weekly-stat-item {
-            display: flex;
-            justify-content: space-between;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-        }
-
-        .weekly-stat-label {
-            color: var(--text-secondary);
-        }
-
-        .weekly-stat-value {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
         .quick-actions {
             display: flex;
             flex-direction: column;
@@ -310,7 +266,6 @@
             padding: 1.25rem 1.5rem;
             border-radius: 12px;
             font-size: 1.05rem;
-            position: relative;
         }
 
         .message-content p {
@@ -319,36 +274,6 @@
 
         .message-content p:last-child {
             margin-bottom: 0;
-        }
-
-        .copy-btn {
-            position: absolute;
-            top: 0.75rem;
-            right: 0.75rem;
-            padding: 0.4rem 0.6rem;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-family: 'JetBrains Mono', monospace;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            transition: all 0.2s ease;
-            opacity: 0.6;
-        }
-
-        .copy-btn:hover {
-            opacity: 1;
-            background: var(--bg-primary);
-            border-color: var(--accent);
-            color: var(--text-primary);
-        }
-
-        .copy-label {
-            font-size: 0.75rem;
         }
 
         .system-message .message-content {
@@ -743,29 +668,6 @@
                     </div>
                 </div>
                 
-                <div class="weekly-summary">
-                    <h3>This Week</h3>
-                    <div class="week-dates" id="week-dates">
-                        <span id="week-range">Mon 23 - Sun 29 Dec</span>
-                    </div>
-                    <div class="weekly-stats">
-                        <div class="weekly-stat-item">
-                            <div class="weekly-stat-label">Weekly Budget</div>
-                            <div class="weekly-stat-value">
-                                <span id="weekly-calories">0</span> / <span id="weekly-budget">13132</span>
-                            </div>
-                        </div>
-                        <div class="weekly-stat-item">
-                            <div class="weekly-stat-label">Remaining</div>
-                            <div class="weekly-stat-value" id="weekly-remaining">13132 cal</div>
-                        </div>
-                        <div class="weekly-stat-item">
-                            <div class="weekly-stat-label">Days Logged</div>
-                            <div class="weekly-stat-value" id="days-logged">0 / 7</div>
-                        </div>
-                    </div>
-                </div>
-                
                 <div class="quick-actions">
                     <button class="action-btn" id="btn-today">How's today?</button>
                     <button class="action-btn" id="btn-suggestions">Meal suggestions</button>
@@ -847,124 +749,53 @@
                 </div>
                 
                 <div class="settings-section">
-                    <h3>Your Profile</h3>
+                    <h3>Daily Macro Targets</h3>
                     <div class="form-group">
-                        <label for="user-sex">Sex</label>
-                        <select id="user-sex">
-                            <option value="">Select...</option>
-                            <option value="female">Female</option>
-                            <option value="male">Male</option>
-                        </select>
+                        <label for="target-protein">Protein (g)</label>
+                        <input type="number" id="target-protein" value="120">
+                        <small>Aim for 1.6-2.2g per kg bodyweight for muscle preservation</small>
                     </div>
                     <div class="form-group">
+                        <label for="target-carbs">Carbs (g)</label>
+                        <input type="number" id="target-carbs" value="200">
+                    </div>
+                    <div class="form-group">
+                        <label for="target-fat">Fat (g)</label>
+                        <input type="number" id="target-fat" value="60">
+                        <small>Minimum 0.5g per kg bodyweight for hormones</small>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>Calorie Goal</h3>
+                    <div class="form-group">
+                        <label for="maintenance-calories">Maintenance Calories (TDEE)</label>
+                        <input type="number" id="maintenance-calories" value="2500" placeholder="e.g. 2500">
+                        <small>Your estimated daily calorie burn. Use a TDEE calculator if unsure.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="calorie-goal">Daily Calorie Goal</label>
+                        <input type="number" id="calorie-goal" value="2000" placeholder="e.g. 2000">
+                        <small>For weight loss: 300-500 below maintenance. For muscle gain: 200-300 above.</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Target Deficit/Surplus</label>
+                        <input type="text" id="calculated-deficit" readonly style="background: var(--bg-tertiary); cursor: not-allowed;" value="500 deficit">
+                        <small>Calculated automatically. ~0.5kg/week loss per 500 cal deficit.</small>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>Personal Context</h3>
+                    <div class="form-group">
                         <label for="user-age">Age</label>
-                        <input type="number" id="user-age" placeholder="e.g. 58">
+                        <input type="number" id="user-age" placeholder="e.g. 45">
                     </div>
                     <div class="form-group">
                         <label for="user-weight">Current Weight (kg)</label>
                         <input type="number" id="user-weight" placeholder="e.g. 80" step="0.1">
+                        <small>Optional - helps with protein calculations</small>
                     </div>
-                    <div class="form-group">
-                        <label for="user-height">Height (cm)</label>
-                        <input type="number" id="user-height" placeholder="e.g. 165">
-                        <small>Used to calculate maintenance calories</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="user-activity">Activity Level</label>
-                        <select id="user-activity">
-                            <option value="sedentary">Sedentary (little/no exercise)</option>
-                            <option value="light">Lightly active (1-3 days/week)</option>
-                            <option value="moderate" selected>Moderately active (3-5 days/week)</option>
-                            <option value="very">Very active (6-7 days/week)</option>
-                            <option value="extra">Extra active (athlete/physical job)</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="settings-section">
-                    <h3>Weight Loss Goal</h3>
-                    <div class="form-group">
-                        <label for="target-weight">Target Weight (kg)</label>
-                        <input type="number" id="target-weight" placeholder="e.g. 60" step="0.1">
-                    </div>
-                    <div class="form-group">
-                        <label for="target-date">Target Date</label>
-                        <input type="date" id="target-date">
-                        <small>When do you want to reach your goal?</small>
-                    </div>
-                    <div class="form-group">
-                        <button type="button" id="calculate-plan" style="width: 100%; padding: 0.75rem; background: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem;">
-                            Calculate My Plan
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="settings-section" id="calculated-plan" style="display: none;">
-                    <h3>Your Personalized Plan</h3>
-                    <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                        <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
-                            <strong>Weight to lose:</strong> <span id="plan-weight-loss"></span>
-                        </div>
-                        <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
-                            <strong>Time available:</strong> <span id="plan-time"></span>
-                        </div>
-                        <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
-                            <strong>Rate needed:</strong> <span id="plan-rate"></span>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Maintenance Calories (TDEE)</label>
-                        <input type="number" id="maintenance-calories" readonly style="background: var(--bg-tertiary); cursor: not-allowed;">
-                        <small>Calculated from your age, weight, height, and activity level</small>
-                    </div>
-                    <div class="form-group">
-                        <label>Daily Calorie Goal</label>
-                        <input type="number" id="calorie-goal" readonly style="background: var(--bg-tertiary); cursor: not-allowed;">
-                        <small>Calculated to hit your target weight by target date</small>
-                    </div>
-                    <div class="form-group">
-                        <label>Daily Deficit</label>
-                        <input type="text" id="calculated-deficit" readonly style="background: var(--bg-tertiary); cursor: not-allowed;">
-                    </div>
-                </div>
-                
-                <div class="settings-section">
-                    <h3>Daily Macro Targets</h3>
-                    <div style="background: var(--system-msg); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem;">
-                        ℹ️ These are calculated automatically based on your weight and goals. They'll update as you lose weight!
-                    </div>
-                    <div class="form-group">
-                        <label for="target-protein">Protein Target (g)</label>
-                        <input type="number" id="target-protein" value="120" readonly style="background: var(--bg-tertiary); cursor: not-allowed;">
-                        <small>Auto-calculated: 1.6g per kg bodyweight for muscle preservation</small>
-                    </div>
-                    <div class="form-group">
-                        <label>Protein Acceptable Range</label>
-                        <div style="display: flex; gap: 1rem; align-items: center;">
-                            <div style="flex: 1;">
-                                <label for="protein-min" style="font-size: 0.85rem; color: var(--text-tertiary);">Min (g)</label>
-                                <input type="number" id="protein-min" value="96" readonly style="background: var(--bg-tertiary); cursor: not-allowed;">
-                            </div>
-                            <span style="color: var(--text-tertiary); padding-top: 1.5rem;">to</span>
-                            <div style="flex: 1;">
-                                <label for="protein-max" style="font-size: 0.85rem; color: var(--text-tertiary);">Max (g)</label>
-                                <input type="number" id="protein-max" value="128" readonly style="background: var(--bg-tertiary); cursor: not-allowed;">
-                            </div>
-                        </div>
-                        <small>Auto-calculated: 1.2-1.6g per kg bodyweight</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="target-fat">Fat Minimum (g)</label>
-                        <input type="number" id="target-fat" value="60" readonly style="background: var(--bg-tertiary); cursor: not-allowed;">
-                        <small>Auto-calculated: 0.8g per kg bodyweight for hormones</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="target-carbs">Carbs (g)</label>
-                        <input type="number" id="target-carbs" value="200" readonly style="background: var(--bg-tertiary); cursor: not-allowed;">
-                        <small>Remainder of calories after protein and fat</small>
-                    </div>
-                </div>
                     <div class="form-group">
                         <label for="user-goals">Primary Goals</label>
                         <textarea id="user-goals" rows="3" placeholder="e.g. Lose 10kg, build muscle, improve energy, better sleep quality..."></textarea>
@@ -1003,31 +834,18 @@
         // State management
         const state = {
             macros: {
-                protein: { current: 0, target: 120, min: 96, max: 128 },
+                protein: { current: 0, target: 120 },
                 carbs: { current: 0, target: 200 },
                 fat: { current: 0, target: 60 }
             },
             calories: { current: 0, target: 2000, maintenance: 2500 },
-            weeklyData: {
-                weekStart: null,
-                totalCalories: 0,
-                totalProtein: 0,
-                weeklyBudget: 0,
-                daysLogged: 0,
-                days: {} // Store data for each day of the week
-            },
             conversationHistory: [],
             uploadedPhoto: null, // Store photo for next message
             settings: {
                 apiProvider: 'claude',
                 apiKey: '',
-                userSex: '',
                 userAge: '',
                 userWeight: '',
-                userHeight: '',
-                userActivity: 'moderate',
-                targetWeight: '',
-                targetDate: '',
                 userGoals: '',
                 userContext: '',
                 userMedications: '',
@@ -1115,9 +933,6 @@
             // Update deficit calculation when calorie fields change
             document.getElementById('maintenance-calories').addEventListener('input', updateDeficitCalculation);
             document.getElementById('calorie-goal').addEventListener('input', updateDeficitCalculation);
-            
-            // Calculate plan button
-            document.getElementById('calculate-plan').addEventListener('click', calculatePersonalizedPlan);
             
             // Photo upload
             document.getElementById('photo-btn').addEventListener('click', () => {
@@ -1211,22 +1026,9 @@
         }
 
         function updateMacroDisplay() {
-            // Update protein with range indicator
-            const proteinCurrent = Math.round(state.macros.protein.current);
-            document.getElementById('protein-current').textContent = proteinCurrent;
-            
-            // Show range instead of single target
-            const proteinMin = state.macros.protein.min || state.macros.protein.target;
-            const proteinMax = state.macros.protein.max || state.macros.protein.target;
-            if (proteinMin !== proteinMax) {
-                document.getElementById('protein-target').textContent = `${proteinMin}-${proteinMax}`;
-            } else {
-                document.getElementById('protein-target').textContent = state.macros.protein.target;
-            }
-            
-            // Use mid-point of range for progress bar
-            const proteinTarget = (proteinMin + proteinMax) / 2;
-            const proteinPercent = Math.min((state.macros.protein.current / proteinTarget) * 100, 100);
+            document.getElementById('protein-current').textContent = Math.round(state.macros.protein.current);
+            document.getElementById('protein-target').textContent = state.macros.protein.target;
+            const proteinPercent = Math.min((state.macros.protein.current / state.macros.protein.target) * 100, 100);
             document.querySelector('.protein-fill').style.width = `${proteinPercent}%`;
             
             document.getElementById('carbs-current').textContent = Math.round(state.macros.carbs.current);
@@ -1259,89 +1061,6 @@
                 deficitLabel.textContent = 'Perfect!';
                 deficitValue.textContent = 'On target';
                 deficitValue.style.color = 'var(--fat-color)';
-            }
-            
-            // Update weekly summary
-            updateWeeklyDisplay();
-        }
-        
-        function updateWeeklyDisplay() {
-            // Calculate week start (Monday)
-            const today = new Date();
-            const dayOfWeek = today.getDay();
-            const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Adjust for Sunday
-            const weekStart = new Date(today);
-            weekStart.setDate(today.getDate() + diff);
-            weekStart.setHours(0, 0, 0, 0);
-            
-            // Format week range
-            const weekEnd = new Date(weekStart);
-            weekEnd.setDate(weekStart.getDate() + 6);
-            
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            const startStr = `${weekStart.getDate()} ${months[weekStart.getMonth()]}`;
-            const endStr = `${weekEnd.getDate()} ${months[weekEnd.getMonth()]}`;
-            
-            document.getElementById('week-range').textContent = `Mon ${startStr} - Sun ${endStr}`;
-            
-            // Load weekly data
-            loadWeeklyData(weekStart);
-            
-            // Calculate weekly budget
-            const weeklyBudget = state.calories.target * 7;
-            state.weeklyData.weeklyBudget = weeklyBudget;
-            
-            // Display weekly stats
-            document.getElementById('weekly-calories').textContent = state.weeklyData.totalCalories;
-            document.getElementById('weekly-budget').textContent = weeklyBudget;
-            
-            const remaining = weeklyBudget - state.weeklyData.totalCalories;
-            const remainingEl = document.getElementById('weekly-remaining');
-            if (remaining >= 0) {
-                remainingEl.textContent = `${remaining} cal`;
-                remainingEl.style.color = 'var(--fat-color)';
-            } else {
-                remainingEl.textContent = `${Math.abs(remaining)} over`;
-                remainingEl.style.color = 'var(--protein-color)';
-            }
-            
-            document.getElementById('days-logged').textContent = `${state.weeklyData.daysLogged} / 7`;
-        }
-        
-        function loadWeeklyData(weekStart) {
-            // Load data for the current week from localStorage
-            state.weeklyData.totalCalories = 0;
-            state.weeklyData.totalProtein = 0;
-            state.weeklyData.daysLogged = 0;
-            state.weeklyData.days = {};
-            
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            for (let i = 0; i < 7; i++) {
-                const date = new Date(weekStart);
-                date.setDate(weekStart.getDate() + i);
-                
-                // Only count up to today
-                if (date > today) break;
-                
-                const dateStr = date.toDateString();
-                const dayData = localStorage.getItem(`macros_${dateStr}`);
-                
-                if (dayData) {
-                    const data = JSON.parse(dayData);
-                    const dayCalories = (data.protein.current * 4) + (data.carbs.current * 4) + (data.fat.current * 9);
-                    
-                    if (dayCalories > 0) {
-                        state.weeklyData.totalCalories += Math.round(dayCalories);
-                        state.weeklyData.totalProtein += data.protein.current;
-                        state.weeklyData.daysLogged++;
-                        state.weeklyData.days[dateStr] = {
-                            calories: dayCalories,
-                            protein: data.protein.current
-                        };
-                    }
-                }
             }
         }
 
@@ -1414,17 +1133,9 @@
             
             const formattedText = formatMessage(text);
             
-            // Store the raw text in a data attribute for copying
             messageDiv.innerHTML = `
-                <div class="message-content" data-raw-text="${escapeHtml(text)}">
+                <div class="message-content">
                     ${formattedText}
-                    <button class="copy-btn" onclick="copyMessageToClipboard(this)" title="Copy to clipboard">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        </svg>
-                        <span class="copy-label">Copy</span>
-                    </button>
                 </div>
             `;
             messagesContainer.appendChild(messageDiv);
@@ -1482,21 +1193,12 @@
                     ? `${Math.abs(deficit)} cal surplus for muscle gain`
                     : 'maintenance calories';
             
-            const proteinRange = state.macros.protein.min !== state.macros.protein.max 
-                ? `${state.macros.protein.min}-${state.macros.protein.max}g (range)`
-                : `${state.macros.protein.target}g`;
-            
-            const weeklyRemaining = state.weeklyData.weeklyBudget - state.weeklyData.totalCalories;
-            const weeklyContext = state.weeklyData.daysLogged > 0 
-                ? `\nWeekly Progress: ${state.weeklyData.totalCalories} / ${state.weeklyData.weeklyBudget} cal (${weeklyRemaining} remaining, ${state.weeklyData.daysLogged}/7 days logged)`
-                : '';
-            
             const currentMacros = `
 Current macros today:
-- Protein: ${Math.round(state.macros.protein.current)}g / ${proteinRange}
+- Protein: ${Math.round(state.macros.protein.current)}g / ${state.macros.protein.target}g
 - Carbs: ${Math.round(state.macros.carbs.current)}g / ${state.macros.carbs.target}g
 - Fat: ${Math.round(state.macros.fat.current)}g / ${state.macros.fat.target}g
-- Calories: ${state.calories.current} / ${state.calories.target} (${deficitText})${weeklyContext}
+- Calories: ${state.calories.current} / ${state.calories.target} (${deficitText})
 `;
 
             const medicationInfo = state.settings.userMedications || state.settings.userSupplements || state.settings.userConditions
@@ -1552,9 +1254,6 @@ When analyzing uploaded photos of food labels or supplements:
 
 Guidelines:
 - Be supportive and realistic, not preachy
-- WEEKLY FLEXIBILITY: A daily "fail" doesn't matter if the weekly total is on track - emphasize this!
-- If they're over today but under budget for the week, reassure them
-- Protein ranges are acceptable targets - anywhere in the range is success
 - Offer practical swaps and suggestions
 - Consider their age, goals, and context
 - Be honest about what works and what doesn't
@@ -1712,118 +1411,6 @@ Keep responses conversational and not too long unless they ask for detailed info
             document.getElementById('settings-modal').classList.remove('active');
         }
 
-        // Calculate personalized plan based on goals
-        function calculatePersonalizedPlan() {
-            // Get user inputs
-            const sex = document.getElementById('user-sex').value;
-            const age = parseInt(document.getElementById('user-age').value);
-            const weight = parseFloat(document.getElementById('user-weight').value);
-            const height = parseInt(document.getElementById('user-height').value);
-            const activity = document.getElementById('user-activity').value;
-            const targetWeight = parseFloat(document.getElementById('target-weight').value);
-            const targetDate = document.getElementById('target-date').value;
-            
-            // Validate inputs
-            if (!sex || !age || !weight || !height || !targetWeight || !targetDate) {
-                alert('Please fill in all profile and goal fields');
-                return;
-            }
-            
-            // Calculate BMR (Mifflin-St Jeor equation)
-            let bmr;
-            if (sex === 'male') {
-                bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
-            } else {
-                bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
-            }
-            
-            // Calculate TDEE (maintenance calories)
-            const activityMultipliers = {
-                sedentary: 1.2,
-                light: 1.375,
-                moderate: 1.55,
-                very: 1.725,
-                extra: 1.9
-            };
-            const tdee = Math.round(bmr * activityMultipliers[activity]);
-            
-            // Calculate weight loss needed
-            const weightToLose = weight - targetWeight;
-            
-            // Calculate days available
-            const today = new Date();
-            const target = new Date(targetDate);
-            const daysAvailable = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
-            const weeksAvailable = (daysAvailable / 7).toFixed(1);
-            
-            if (daysAvailable <= 0) {
-                alert('Target date must be in the future!');
-                return;
-            }
-            
-            if (weightToLose <= 0) {
-                alert('Target weight must be less than current weight for weight loss');
-                return;
-            }
-            
-            // Calculate required rate (kg/week)
-            const rateNeeded = weightToLose / (daysAvailable / 7);
-            
-            // Calculate required deficit (3500 cal = 0.45kg, so ~7700 cal = 1kg)
-            const dailyDeficitNeeded = Math.round((weightToLose * 7700) / daysAvailable);
-            
-            // Check if goal is realistic
-            let warning = '';
-            if (rateNeeded > 1.0) {
-                warning = '⚠️ This rate is very aggressive (>1kg/week). Consider a longer timeframe for sustainable loss.';
-            } else if (rateNeeded < 0.25) {
-                warning = 'ℹ️ This is a very gradual rate (<0.25kg/week). You could reach your goal faster if desired.';
-            }
-            
-            // Calculate daily calorie goal
-            const dailyGoal = Math.round(tdee - dailyDeficitNeeded);
-            
-            // Safety check - don't go below 1200 for women, 1500 for men
-            const minCalories = sex === 'female' ? 1200 : 1500;
-            if (dailyGoal < minCalories) {
-                alert(`This goal requires eating only ${dailyGoal} calories/day, which is below the safe minimum of ${minCalories}. Please choose a later target date.`);
-                return;
-            }
-            
-            // Calculate macros based on current weight
-            const proteinTarget = Math.round(weight * 1.6); // 1.6g per kg
-            const proteinMin = Math.round(weight * 1.2); // 1.2g per kg
-            const proteinMax = Math.round(weight * 2.0); // 2.0g per kg
-            const fatTarget = Math.round(weight * 0.8); // 0.8g per kg for hormones
-            
-            // Remaining calories for carbs
-            const proteinCals = proteinTarget * 4;
-            const fatCals = fatTarget * 9;
-            const remainingCals = dailyGoal - proteinCals - fatCals;
-            const carbsTarget = Math.round(remainingCals / 4);
-            
-            // Update the UI
-            document.getElementById('plan-weight-loss').textContent = `${weightToLose.toFixed(1)}kg`;
-            document.getElementById('plan-time').textContent = `${weeksAvailable} weeks (${daysAvailable} days)`;
-            document.getElementById('plan-rate').textContent = `${rateNeeded.toFixed(2)}kg/week ${warning}`;
-            
-            document.getElementById('maintenance-calories').value = tdee;
-            document.getElementById('calorie-goal').value = dailyGoal;
-            document.getElementById('calculated-deficit').value = `${dailyDeficitNeeded} cal deficit (~${rateNeeded.toFixed(2)}kg/week loss)`;
-            
-            document.getElementById('target-protein').value = proteinTarget;
-            document.getElementById('protein-min').value = proteinMin;
-            document.getElementById('protein-max').value = proteinMax;
-            document.getElementById('target-fat').value = fatTarget;
-            document.getElementById('target-carbs').value = carbsTarget;
-            
-            // Show the calculated plan section
-            document.getElementById('calculated-plan').style.display = 'block';
-            
-            // Scroll to show the plan
-            document.getElementById('calculated-plan').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
         function loadSettings() {
             const stored = localStorage.getItem('settings');
             if (stored) {
@@ -1834,8 +1421,6 @@ Keep responses conversational and not too long unless they ask for detailed info
             if (storedTargets) {
                 const targets = JSON.parse(storedTargets);
                 state.macros.protein.target = targets.protein;
-                state.macros.protein.min = targets.proteinMin || targets.protein;
-                state.macros.protein.max = targets.proteinMax || targets.protein;
                 state.macros.carbs.target = targets.carbs;
                 state.macros.fat.target = targets.fat;
                 state.calories.target = targets.calories || targets.calorieTarget || 2000;
@@ -1847,38 +1432,18 @@ Keep responses conversational and not too long unless they ask for detailed info
         function loadSettingsToForm() {
             document.getElementById('api-provider').value = state.settings.apiProvider;
             document.getElementById('api-key').value = state.settings.apiKey;
-            
-            // Profile
-            document.getElementById('user-sex').value = state.settings.userSex || '';
-            document.getElementById('user-age').value = state.settings.userAge || '';
-            document.getElementById('user-weight').value = state.settings.userWeight || '';
-            document.getElementById('user-height').value = state.settings.userHeight || '';
-            document.getElementById('user-activity').value = state.settings.userActivity || 'moderate';
-            
-            // Goals
-            document.getElementById('target-weight').value = state.settings.targetWeight || '';
-            document.getElementById('target-date').value = state.settings.targetDate || '';
-            
-            // Macros (readonly, calculated)
             document.getElementById('target-protein').value = state.macros.protein.target;
-            document.getElementById('protein-min').value = state.macros.protein.min || state.macros.protein.target;
-            document.getElementById('protein-max').value = state.macros.protein.max || state.macros.protein.target;
             document.getElementById('target-carbs').value = state.macros.carbs.target;
             document.getElementById('target-fat').value = state.macros.fat.target;
             document.getElementById('maintenance-calories').value = state.calories.maintenance;
             document.getElementById('calorie-goal').value = state.calories.target;
-            
-            // Context
+            document.getElementById('user-age').value = state.settings.userAge || '';
+            document.getElementById('user-weight').value = state.settings.userWeight || '';
             document.getElementById('user-goals').value = state.settings.userGoals || '';
             document.getElementById('user-context').value = state.settings.userContext || '';
             document.getElementById('user-medications').value = state.settings.userMedications || '';
             document.getElementById('user-supplements').value = state.settings.userSupplements || '';
             document.getElementById('user-conditions').value = state.settings.userConditions || '';
-            
-            // Show calculated plan if we have the data
-            if (state.settings.targetWeight && state.settings.targetDate) {
-                document.getElementById('calculated-plan').style.display = 'block';
-            }
             
             // Update calculated deficit field
             updateDeficitCalculation();
@@ -1902,19 +1467,8 @@ Keep responses conversational and not too long unless they ask for detailed info
         function saveSettings() {
             state.settings.apiProvider = document.getElementById('api-provider').value;
             state.settings.apiKey = document.getElementById('api-key').value;
-            
-            // Profile
-            state.settings.userSex = document.getElementById('user-sex').value;
             state.settings.userAge = document.getElementById('user-age').value;
             state.settings.userWeight = document.getElementById('user-weight').value;
-            state.settings.userHeight = document.getElementById('user-height').value;
-            state.settings.userActivity = document.getElementById('user-activity').value;
-            
-            // Goals
-            state.settings.targetWeight = document.getElementById('target-weight').value;
-            state.settings.targetDate = document.getElementById('target-date').value;
-            
-            // Context
             state.settings.userGoals = document.getElementById('user-goals').value;
             state.settings.userContext = document.getElementById('user-context').value;
             state.settings.userMedications = document.getElementById('user-medications').value;
@@ -1923,10 +1477,7 @@ Keep responses conversational and not too long unless they ask for detailed info
             
             localStorage.setItem('settings', JSON.stringify(state.settings));
             
-            // Macros (from calculated values)
             state.macros.protein.target = parseInt(document.getElementById('target-protein').value);
-            state.macros.protein.min = parseInt(document.getElementById('protein-min').value) || state.macros.protein.target;
-            state.macros.protein.max = parseInt(document.getElementById('protein-max').value) || state.macros.protein.target;
             state.macros.carbs.target = parseInt(document.getElementById('target-carbs').value);
             state.macros.fat.target = parseInt(document.getElementById('target-fat').value);
             state.calories.maintenance = parseInt(document.getElementById('maintenance-calories').value);
@@ -1934,8 +1485,6 @@ Keep responses conversational and not too long unless they ask for detailed info
             
             const targets = {
                 protein: state.macros.protein.target,
-                proteinMin: state.macros.protein.min,
-                proteinMax: state.macros.protein.max,
                 carbs: state.macros.carbs.target,
                 fat: state.macros.fat.target,
                 calories: state.calories.target,
@@ -1947,13 +1496,7 @@ Keep responses conversational and not too long unless they ask for detailed info
             updateMacroDisplay();
             closeSettings();
             
-            // Give feedback about auto-adjusting macros
-            const weight = state.settings.userWeight;
-            if (weight) {
-                addAssistantMessage(`Settings saved! Your plan is personalized for ${weight}kg. As you lose weight, remember to recalculate your plan - your protein needs and calorie targets will adjust automatically!`);
-            } else {
-                addAssistantMessage("Settings saved! I'm ready to help you with your goals.");
-            }
+            addAssistantMessage("Settings saved! I'm ready to help you with your goals.");
         }
 
         // Utility functions
@@ -1973,27 +1516,6 @@ Keep responses conversational and not too long unless they ask for detailed info
                 
                 return `<p>${p}</p>`;
             }).join('');
-        }
-        
-        function copyMessageToClipboard(button) {
-            const messageContent = button.closest('.message-content');
-            const rawText = messageContent.getAttribute('data-raw-text');
-            
-            navigator.clipboard.writeText(rawText).then(() => {
-                // Visual feedback
-                const label = button.querySelector('.copy-label');
-                const originalText = label.textContent;
-                label.textContent = 'Copied!';
-                button.style.color = 'var(--fat-color)';
-                
-                setTimeout(() => {
-                    label.textContent = originalText;
-                    button.style.color = '';
-                }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy:', err);
-                alert('Failed to copy to clipboard');
-            });
         }
     </script>
 </body>
