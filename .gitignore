@@ -1,0 +1,36 @@
+# API Keys and Personal Data
+*.env
+.env.local
+api_keys.txt
+settings.json
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Node (if you ever add Node)
+node_modules/
+package-lock.json
+
+# Temporary files
+*.tmp
+*.temp
