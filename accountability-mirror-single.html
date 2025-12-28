@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accountability Mirror</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='6' y='4' width='20' height='24' rx='2' fill='%231a1f29' stroke='%235b8ef4' stroke-width='2'/%3E%3Cpath d='M8 6 L24 6 L24 26 L8 26 Z' fill='url(%23gradient)'/%3E%3Cpath d='M12 16 L15 19 L21 13' stroke='%235b8ef4' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cdefs%3E%3ClinearGradient id='gradient' x1='8' y1='6' x2='24' y2='26' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0%25' stop-color='%23252b38' stop-opacity='0.8'/%3E%3Cstop offset='50%25' stop-color='%231a1f29' stop-opacity='0.6'/%3E%3Cstop offset='100%25' stop-color='%230f1419' stop-opacity='0.9'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -574,7 +575,9 @@
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
+            overflow-x: hidden;
             animation: modalSlideIn 0.3s ease;
+            box-sizing: border-box;
         }
 
         @keyframes modalSlideIn {
@@ -598,7 +601,8 @@
 
         .modal-header h2 {
             font-size: 1.5rem;
-            font-weight: 600;
+            font-weight: 700;
+            letter-spacing: -0.02em;
         }
 
         .close-modal {
@@ -612,7 +616,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 6px;
+            border-radius: 8px;
             transition: all 0.2s ease;
         }
 
@@ -623,6 +627,7 @@
 
         .modal-body {
             padding: 1.5rem;
+            box-sizing: border-box;
         }
 
         .settings-section {
@@ -630,37 +635,44 @@
         }
 
         .settings-section h3 {
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            color: var(--text-secondary);
+            font-size: 0.6875rem;
+            margin-bottom: 1.25rem;
+            color: var(--text-tertiary);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 600;
+            letter-spacing: 0.1em;
+            font-weight: 700;
         }
 
         .form-group {
             margin-bottom: 1.25rem;
+            max-width: 100%;
+            overflow: hidden;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.875rem;
+            font-weight: 500;
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 0.75rem 1rem;
+            max-width: 100%;
+            min-width: 0;
+            padding: 0.875rem 1rem;
             background: var(--bg-primary);
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: 8px;
             color: var(--text-primary);
-            font-family: 'Crimson Pro', serif;
-            font-size: 1rem;
-            transition: border-color 0.2s ease;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9375rem;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+            overflow: hidden;
         }
 
         .form-group input:focus,
@@ -668,31 +680,60 @@
         .form-group textarea:focus {
             outline: none;
             border-color: var(--accent);
+            background: var(--bg-secondary);
+            box-shadow: 0 0 0 3px rgba(91, 142, 244, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+            line-height: 1.5;
         }
 
         .form-group small {
             display: block;
             margin-top: 0.5rem;
             color: var(--text-tertiary);
-            font-size: 0.85rem;
+            font-size: 0.8125rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 100%;
+        }
+
+        .form-group small a {
+            color: var(--accent);
+            text-decoration: none;
+            word-break: break-word;
+        }
+
+        .form-group small a:hover {
+            text-decoration: underline;
         }
 
         .save-btn {
             width: 100%;
             padding: 1rem;
-            background: var(--accent);
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
             border: none;
             border-radius: 8px;
             color: white;
-            font-family: 'Crimson Pro', serif;
-            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9375rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(91, 142, 244, 0.3);
         }
 
         .save-btn:hover {
-            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(91, 142, 244, 0.4);
+        }
+
+        .save-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(91, 142, 244, 0.3);
         }
 
         /* Scrollbar styling */
@@ -1069,6 +1110,9 @@
                         <small>Remainder of calories after protein and fat</small>
                     </div>
                 </div>
+                
+                <div class="settings-section">
+                    <h3>Additional Information</h3>
                     <div class="form-group">
                         <label for="user-goals">Primary Goals</label>
                         <textarea id="user-goals" rows="3" placeholder="e.g. Lose 10kg, build muscle, improve energy, better sleep quality..."></textarea>
@@ -1099,9 +1143,9 @@
                 </div>
                 
                 <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem;">
-                    <button onclick="exportSettings()" style="flex: 1; padding: 0.875rem; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); border-radius: 8px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 500; transition: all 0.2s;">
+                    <button onclick="exportSettings()" style="flex: 1; padding: 0.875rem 1rem; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); border-radius: 8px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 500; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.background='var(--bg-secondary)'; this.style.borderColor='var(--accent)'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--bg-tertiary)'; this.style.borderColor='var(--border)'; this.style.transform='translateY(0)'">
                         <span style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                                 <polyline points="7 10 12 15 17 10"/>
                                 <line x1="12" y1="15" x2="12" y2="3"/>
@@ -1109,9 +1153,9 @@
                             Export Settings
                         </span>
                     </button>
-                    <button onclick="importSettings()" style="flex: 1; padding: 0.875rem; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); border-radius: 8px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 500; transition: all 0.2s;">
+                    <button onclick="importSettings()" style="flex: 1; padding: 0.875rem 1rem; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); border-radius: 8px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 500; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.background='var(--bg-secondary)'; this.style.borderColor='var(--accent)'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--bg-tertiary)'; this.style.borderColor='var(--border)'; this.style.transform='translateY(0)'">
                         <span style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                                 <polyline points="17 8 12 3 7 8"/>
                                 <line x1="12" y1="3" x2="12" y2="15"/>
