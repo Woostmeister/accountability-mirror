@@ -1,5 +1,7 @@
 # Accountability Mirror
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-accountability--mirror.vercel.app-blue?style=for-the-badge&logo=vercel)](https://accountability-mirror.vercel.app)
+
 A conversational AI-powered health and fitness accountability system with medication safety checking, photo-based food tracking, and intelligent weekly calorie budgeting.
 
 ## 🚀 Quick Start
