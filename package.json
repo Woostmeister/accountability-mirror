@@ -1,0 +1,21 @@
+{
+  "name": "accountability-mirror",
+  "version": "1.0.0",
+  "description": "AI-powered health and fitness accountability coach with medication safety features",
+  "private": false,
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required'"
+  },
+  "keywords": [
+    "health",
+    "fitness",
+    "ai",
+    "accountability",
+    "nutrition",
+    "macro-tracking",
+    "claude"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

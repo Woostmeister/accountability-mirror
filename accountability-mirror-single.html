@@ -6,7 +6,7 @@
     <title>Accountability Mirror</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Crimson+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,27 +15,31 @@
         }
 
         :root {
-            --bg-primary: #0a0e12;
-            --bg-secondary: #141921;
-            --bg-tertiary: #1d2530;
-            --text-primary: #e8eaed;
-            --text-secondary: #9ca3af;
-            --text-tertiary: #6b7280;
-            --accent: #3b82f6;
-            --accent-hover: #2563eb;
-            --border: #2d3748;
-            --protein-color: #ef4444;
-            --carbs-color: #f59e0b;
-            --fat-color: #10b981;
-            --system-msg: #1e293b;
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a1f29;
+            --bg-tertiary: #252b38;
+            --text-primary: #f0f2f5;
+            --text-secondary: #b4bac6;
+            --text-tertiary: #7d8694;
+            --accent: #5b8ef4;
+            --accent-hover: #7ca5f6;
+            --border: #2d3543;
+            --protein-color: #ff6b9d;
+            --carbs-color: #ffa94d;
+            --fat-color: #51cf66;
+            --system-msg: rgba(91, 142, 244, 0.08);
+            --success: #51cf66;
+            --shadow: rgba(0, 0, 0, 0.3);
         }
 
         body {
-            font-family: 'Crimson Pro', serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
             overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .app-container {
@@ -55,16 +59,21 @@
         }
 
         .logo h1 {
-            font-size: 2rem;
-            font-weight: 600;
+            font-size: 1.875rem;
+            font-weight: 700;
             margin-bottom: 0.25rem;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .tagline {
-            font-size: 0.875rem;
+            font-size: 0.8125rem;
             color: var(--text-tertiary);
-            font-style: italic;
+            font-weight: 500;
+            letter-spacing: 0.01em;
         }
 
         .daily-stats {
@@ -75,29 +84,31 @@
         .date-display {
             display: flex;
             flex-direction: column;
-            gap: 0.25rem;
-            margin-bottom: 1.5rem;
+            gap: 0.125rem;
+            margin-bottom: 1.75rem;
             padding-bottom: 1.5rem;
             border-bottom: 1px solid var(--border);
         }
 
         .date-display .day {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 1.375rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
         }
 
         .date-display .full-date {
-            font-size: 0.875rem;
+            font-size: 0.8125rem;
             color: var(--text-secondary);
+            font-weight: 500;
         }
 
         .macro-summary h3 {
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            color: var(--text-secondary);
+            font-size: 0.6875rem;
+            margin-bottom: 1.25rem;
+            color: var(--text-tertiary);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 600;
+            letter-spacing: 0.1em;
+            font-weight: 700;
         }
 
         .macro-bars {
@@ -110,117 +121,149 @@
         .macro-item {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.625rem;
         }
 
         .macro-label {
             display: flex;
             justify-content: space-between;
-            font-size: 0.875rem;
+            font-size: 0.8125rem;
             font-family: 'JetBrains Mono', monospace;
+            align-items: baseline;
         }
 
         .macro-label span:first-child {
             color: var(--text-secondary);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.08em;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
 
         .macro-value {
             color: var(--text-primary);
             font-weight: 600;
+            font-size: 0.875rem;
         }
 
         .macro-bar {
-            height: 8px;
+            height: 6px;
             background: var(--bg-tertiary);
-            border-radius: 4px;
+            border-radius: 3px;
             overflow: hidden;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         .macro-fill {
             height: 100%;
-            transition: width 0.5s ease;
-            border-radius: 4px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 3px;
+            position: relative;
+        }
+
+        .macro-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), transparent);
+            border-radius: 3px 3px 0 0;
         }
 
         .protein-fill {
-            background: var(--protein-color);
+            background: linear-gradient(90deg, var(--protein-color) 0%, rgba(255, 107, 157, 0.8) 100%);
         }
 
         .carbs-fill {
-            background: var(--carbs-color);
+            background: linear-gradient(90deg, var(--carbs-color) 0%, rgba(255, 169, 77, 0.8) 100%);
         }
 
         .fat-fill {
-            background: var(--fat-color);
+            background: linear-gradient(90deg, var(--fat-color) 0%, rgba(81, 207, 102, 0.8) 100%);
         }
 
         .calories-display {
             display: flex;
-            justify-content: space-between;
-            padding: 1rem;
-            background: var(--bg-tertiary);
-            border-radius: 8px;
+            flex-direction: column;
+            gap: 0.875rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, rgba(43, 50, 65, 0.6) 100%);
+            border-radius: 10px;
             font-family: 'JetBrains Mono', monospace;
-            margin-top: 1.5rem;
+            margin-top: 1.75rem;
+            border: 1px solid rgba(91, 142, 244, 0.1);
         }
 
         .cal-label {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
+            font-size: 0.6875rem;
+            color: var(--text-tertiary);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.1em;
+            font-weight: 700;
         }
 
         .cal-value {
-            font-size: 1rem;
-            font-weight: 600;
+            font-size: 1.5rem;
+            font-weight: 700;
             color: var(--text-primary);
+            letter-spacing: -0.02em;
         }
 
         .weekly-summary {
-            margin-top: 2rem;
-            padding-top: 1.5rem;
+            margin-top: 2.5rem;
+            padding-top: 2rem;
             border-top: 1px solid var(--border);
         }
 
         .weekly-summary h3 {
-            font-size: 1rem;
-            margin-bottom: 0.75rem;
-            color: var(--text-secondary);
+            font-size: 0.6875rem;
+            margin-bottom: 1rem;
+            color: var(--text-tertiary);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 600;
+            letter-spacing: 0.1em;
+            font-weight: 700;
         }
 
         .week-dates {
-            font-size: 0.875rem;
-            color: var(--text-tertiary);
-            margin-bottom: 1rem;
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.25rem;
             font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
         }
 
         .weekly-stats {
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 1rem;
+            background: var(--bg-tertiary);
+            padding: 1.25rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
         }
 
         .weekly-stat-item {
             display: flex;
             justify-content: space-between;
+            align-items: baseline;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
         }
 
         .weekly-stat-label {
             color: var(--text-secondary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
         }
 
         .weekly-stat-value {
             color: var(--text-primary);
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 0.9375rem;
+            letter-spacing: -0.01em;
         }
 
         .quick-actions {
@@ -231,21 +274,29 @@
         }
 
         .action-btn {
-            padding: 0.75rem 1rem;
+            padding: 0.875rem 1rem;
             background: var(--bg-tertiary);
-            border: 1px solid var(--border);
+            border: 1px solid transparent;
             color: var(--text-primary);
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-family: 'Crimson Pro', serif;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             text-align: left;
         }
 
         .action-btn:hover {
-            background: var(--bg-primary);
+            background: var(--bg-secondary);
             border-color: var(--accent);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
         }
 
         .settings-link {
@@ -255,20 +306,22 @@
 
         .settings-link button {
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.875rem;
             background: transparent;
             border: 1px solid var(--border);
             color: var(--text-secondary);
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-family: 'Crimson Pro', serif;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .settings-link button:hover {
             background: var(--bg-tertiary);
             color: var(--text-primary);
+            border-color: var(--accent);
         }
 
         /* Chat Container */
@@ -407,21 +460,31 @@
             width: 56px;
             height: 56px;
             background: var(--bg-tertiary);
-            border: 1px solid var(--border);
+            border: 1px solid transparent;
             border-radius: 12px;
             color: var(--text-secondary);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             flex-shrink: 0;
         }
 
         .photo-btn:hover {
-            background: var(--bg-primary);
+            background: var(--bg-secondary);
             border-color: var(--accent);
-            color: var(--text-primary);
+            color: var(--accent);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .photo-btn:active {
+            transform: translateY(0);
+        }
+
+        .photo-btn svg {
+            stroke-width: 2.5;
         }
 
         #chat-input {
@@ -431,28 +494,32 @@
             border: 1px solid var(--border);
             border-radius: 12px;
             color: var(--text-primary);
-            font-family: 'Crimson Pro', serif;
-            font-size: 1.05rem;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: 0.9375rem;
+            font-weight: 400;
             resize: none;
             min-height: 56px;
             max-height: 200px;
-            line-height: 1.5;
-            transition: border-color 0.2s ease;
+            line-height: 1.6;
+            transition: all 0.2s ease;
         }
 
         #chat-input:focus {
             outline: none;
             border-color: var(--accent);
+            background: var(--bg-secondary);
+            box-shadow: 0 0 0 3px rgba(91, 142, 244, 0.1);
         }
 
         #chat-input::placeholder {
             color: var(--text-tertiary);
+            font-weight: 400;
         }
 
         .send-btn {
             width: 56px;
             height: 56px;
-            background: var(--accent);
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
             border: none;
             border-radius: 12px;
             color: white;
@@ -460,22 +527,25 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(91, 142, 244, 0.3);
         }
 
         .send-btn:hover {
-            background: var(--accent-hover);
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(91, 142, 244, 0.4);
         }
 
         .send-btn:active {
-            transform: scale(0.95);
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(91, 142, 244, 0.3);
         }
 
         .send-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
         }
 
         /* Modal */
@@ -732,13 +802,15 @@
                     </div>
                     
                     <div class="calories-display">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                            <span class="cal-label">Calories</span>
-                            <span class="cal-value"><span id="calories-current">0</span> / <span id="calories-target">2000</span></span>
+                        <div>
+                            <div class="cal-label">Calories</div>
+                            <div class="cal-value">
+                                <span id="calories-current">0</span><span style="color: var(--text-tertiary); font-size: 1.125rem; margin: 0 0.25rem;">/</span><span id="calories-target" style="color: var(--text-secondary); font-size: 1.125rem;">2000</span>
+                            </div>
                         </div>
-                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-tertiary);">
-                            <span id="deficit-label">Deficit</span>
-                            <span id="deficit-value">0</span>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.05);">
+                            <span id="deficit-label" style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Deficit</span>
+                            <span id="deficit-value" style="font-size: 0.875rem; font-weight: 700;">0</span>
                         </div>
                     </div>
                 </div>
@@ -750,9 +822,9 @@
                     </div>
                     <div class="weekly-stats">
                         <div class="weekly-stat-item">
-                            <div class="weekly-stat-label">Weekly Budget</div>
+                            <div class="weekly-stat-label">Budget</div>
                             <div class="weekly-stat-value">
-                                <span id="weekly-calories">0</span> / <span id="weekly-budget">13132</span>
+                                <span id="weekly-calories">0</span><span style="color: var(--text-tertiary); margin: 0 0.25rem; font-size: 0.75rem;">/</span><span id="weekly-budget" style="color: var(--text-secondary); font-size: 0.8125rem;">13132</span>
                             </div>
                         </div>
                         <div class="weekly-stat-item">
@@ -760,7 +832,7 @@
                             <div class="weekly-stat-value" id="weekly-remaining">13132 cal</div>
                         </div>
                         <div class="weekly-stat-item">
-                            <div class="weekly-stat-label">Days Logged</div>
+                            <div class="weekly-stat-label">Days</div>
                             <div class="weekly-stat-value" id="days-logged">0 / 7</div>
                         </div>
                     </div>
@@ -794,10 +866,9 @@
                 <div class="input-wrapper">
                     <input type="file" id="photo-input" accept="image/*" style="display: none;">
                     <button id="photo-btn" class="photo-btn" title="Upload food photo">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                            <circle cx="8.5" cy="8.5" r="1.5"/>
-                            <polyline points="21 15 16 10 5 21"/>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                            <circle cx="12" cy="13" r="4"/>
                         </svg>
                     </button>
                     <textarea 

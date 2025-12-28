@@ -1,8 +1,13 @@
 # API Keys and Personal Data
 *.env
-.env.local
+*.env.local
+.env.production
+.env.development
 api_keys.txt
 settings.json
+
+# Vercel
+.vercel
 
 # OS Files
 .DS_Store
@@ -20,14 +25,16 @@ desktop.ini
 *.log
 npm-debug.log*
 
-# Python
+# Python (old local server)
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 .Python
+server.py
+START_MIRROR.bat
 
-# Node (if you ever add Node)
+# Node
 node_modules/
 package-lock.json
 
