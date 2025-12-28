@@ -89,7 +89,7 @@
 
 - **Anthropic Docs:** https://docs.anthropic.com
 - **API Console:** https://console.anthropic.com
-- **Report Issues:** [GitHub Issues](https://github.com/YOUR-USERNAME/accountability-mirror/issues)
+- **Report Issues:** [GitHub Issues](https://github.com/Woostmeister/accountability-mirror/issues)
 
 ---
 
