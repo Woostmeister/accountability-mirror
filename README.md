@@ -1,6 +1,27 @@
 # Accountability Mirror
 
-A conversational AI-powered health and fitness accountability system that runs locally on your laptop with medication safety checking and photo-based food tracking.
+A conversational AI-powered health and fitness accountability system with medication safety checking, photo-based food tracking, and intelligent weekly calorie budgeting.
+
+## 🚀 Quick Start
+
+### Option 1: Use the Web Version (Easiest)
+
+**Just visit:** https://accountability-mirror.vercel.app
+
+1. Click **Settings** (bottom left)
+2. Get your API key at [console.anthropic.com](https://console.anthropic.com) (~2 minutes)
+3. Enter your API key and profile details
+4. Start tracking!
+
+**Cost:** ~£0.003 per message. £5 lasts 6+ months.
+
+👉 **[Getting Started Guide](GETTING-STARTED.md)** - Complete step-by-step instructions
+
+### Option 2: Run Locally (For Privacy/Development)
+
+See [Local Setup](#local-setup) below for running on your own computer.
+
+---
 
 ## Features
 
@@ -21,7 +42,22 @@ A conversational AI-powered health and fitness accountability system that runs l
 - 🎯 **Smart Deficit Tracking**: Calculates projected weight loss based on your calorie deficit
 - 🇬🇧 **UK-Focused**: Uses UK foods, terminology, and available products
 
-## Setup
+## ⚠️ Important: Data Privacy
+
+**All your data is stored in YOUR BROWSER ONLY.**
+
+This means:
+- ✅ Total privacy - your data never leaves your device
+- ✅ No accounts, no passwords, no servers storing your health data
+- ❌ No sync between devices
+- ❌ Clearing browser data = losing everything
+- ❌ Each browser needs separate setup
+
+See [PRIVACY.md](PRIVACY.md) for complete details.
+
+---
+
+## Local Setup
 
 ### Prerequisites
 
