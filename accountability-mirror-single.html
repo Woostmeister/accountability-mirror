@@ -858,6 +858,7 @@
                     <div class="message-content">
                         <p>Welcome to your Accountability Mirror. I'm here to support your health and fitness journey with real-time advice, macro tracking, and motivation.</p>
                         <p>Tell me what you're eating, ask questions, share your struggles - let's work on this together.</p>
+                        <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(91, 142, 244, 0.2); font-size: 0.875rem; color: var(--text-secondary);"><strong style="color: var(--accent);">⚠️ Privacy Notice:</strong> All your data (API key, settings, macros) is stored in YOUR BROWSER ONLY. It never leaves your device. <strong>If you clear browser data or use a different browser, you'll need to set up again.</strong> No cloud sync, maximum privacy.</p>
                     </div>
                 </div>
             </div>
@@ -901,6 +902,20 @@
                 <button class="close-modal" id="close-settings">&times;</button>
             </div>
             <div class="modal-body">
+                <div style="background: rgba(91, 142, 244, 0.1); border: 1px solid var(--accent); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+                    <div style="font-weight: 600; color: var(--accent); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        Important: Data Storage
+                    </div>
+                    <div style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5;">
+                        <strong>All settings saved in THIS BROWSER ONLY.</strong> Different browsers = different setups. Clearing browser data = losing everything. No cloud backup.
+                    </div>
+                </div>
+                
                 <div class="settings-section">
                     <h3>API Configuration</h3>
                     <div class="form-group">
@@ -913,7 +928,7 @@
                     <div class="form-group">
                         <label for="api-key">API Key</label>
                         <input type="password" id="api-key" placeholder="Enter your API key">
-                        <small>Your API key is stored locally and never sent anywhere except to the chosen provider.</small>
+                        <small>Stored in YOUR browser only (localStorage). If you clear cache or use a different browser, you'll need to re-enter it. Get yours at <a href="https://console.anthropic.com" target="_blank" style="color: var(--accent);">console.anthropic.com</a></small>
                     </div>
                 </div>
                 
