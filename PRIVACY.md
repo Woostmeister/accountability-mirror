@@ -84,8 +84,9 @@ Pick ONE browser/device as your "main" one:
 ## Questions?
 
 **"Can I export my data?"**
-- Not yet, but we're adding this feature!
-- You can manually copy from Settings for now
+- Yes! Click "Export Settings" in Settings to download a backup file
+- Import it on any browser/device using "Import Settings"
+- Your historical daily macro data is not included (it's in localStorage only)
 
 **"Why not use a database/account system?"**
 - Privacy first - we don't want your health data

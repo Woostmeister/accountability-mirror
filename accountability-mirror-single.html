@@ -1098,6 +1098,29 @@
                     </div>
                 </div>
                 
+                <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem;">
+                    <button onclick="exportSettings()" style="flex: 1; padding: 0.875rem; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); border-radius: 8px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 500; transition: all 0.2s;">
+                        <span style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Export Settings
+                        </span>
+                    </button>
+                    <button onclick="importSettings()" style="flex: 1; padding: 0.875rem; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); border-radius: 8px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 500; transition: all 0.2s;">
+                        <span style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                            Import Settings
+                        </span>
+                    </button>
+                </div>
+                
                 <button class="save-btn" id="save-settings">Save Settings</button>
             </div>
         </div>
@@ -2058,6 +2081,88 @@ Keep responses conversational and not too long unless they ask for detailed info
             } else {
                 addAssistantMessage("Settings saved! I'm ready to help you with your goals.");
             }
+        }
+
+        function exportSettings() {
+            const exportData = {
+                settings: state.settings,
+                macroTargets: {
+                    protein: state.macros.protein.target,
+                    proteinMin: state.macros.protein.min,
+                    proteinMax: state.macros.protein.max,
+                    carbs: state.macros.carbs.target,
+                    fat: state.macros.fat.target,
+                    calories: state.calories.target,
+                    maintenance: state.calories.maintenance
+                },
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            // Create downloadable JSON file
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `accountability-mirror-settings-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            
+            addAssistantMessage("Settings exported! Your backup file has been downloaded. Keep it safe to restore your settings later.");
+        }
+
+        function importSettings() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const importData = JSON.parse(event.target.result);
+                        
+                        // Validate it's our export format
+                        if (!importData.settings || !importData.macroTargets) {
+                            alert('Invalid settings file. Please select a valid Accountability Mirror backup file.');
+                            return;
+                        }
+                        
+                        // Import settings
+                        state.settings = { ...state.settings, ...importData.settings };
+                        localStorage.setItem('settings', JSON.stringify(state.settings));
+                        
+                        // Import macro targets
+                        const targets = importData.macroTargets;
+                        state.macros.protein.target = targets.protein;
+                        state.macros.protein.min = targets.proteinMin || targets.protein;
+                        state.macros.protein.max = targets.proteinMax || targets.protein;
+                        state.macros.carbs.target = targets.carbs;
+                        state.macros.fat.target = targets.fat;
+                        state.calories.target = targets.calories;
+                        state.calories.maintenance = targets.maintenance;
+                        
+                        localStorage.setItem('macroTargets', JSON.stringify(targets));
+                        
+                        // Reload settings into form
+                        loadSettingsToForm();
+                        updateMacroDisplay();
+                        
+                        addAssistantMessage("Settings imported successfully! All your data has been restored.");
+                        
+                    } catch (error) {
+                        console.error('Import error:', error);
+                        alert('Failed to import settings. The file may be corrupted or in the wrong format.');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            
+            input.click();
         }
 
         // Utility functions
