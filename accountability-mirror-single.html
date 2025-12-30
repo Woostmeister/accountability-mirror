@@ -1364,6 +1364,38 @@
         function saveTodaysMacros() {
             const today = new Date().toDateString();
             localStorage.setItem(`macros_${today}`, JSON.stringify(state.macros));
+            
+            // Cleanup old data (keep last 30 days only)
+            cleanupOldMacroData();
+        }
+        
+        function cleanupOldMacroData() {
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            
+            // Get all localStorage keys
+            const keysToDelete = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                
+                // Check if it's a macros_ key
+                if (key && key.startsWith('macros_')) {
+                    // Extract the date string
+                    const dateStr = key.replace('macros_', '');
+                    const keyDate = new Date(dateStr);
+                    
+                    // If older than 30 days, mark for deletion
+                    if (keyDate < thirtyDaysAgo) {
+                        keysToDelete.push(key);
+                    }
+                }
+            }
+            
+            // Delete old entries
+            keysToDelete.forEach(key => {
+                localStorage.removeItem(key);
+                console.log(`Cleaned up old macro data: ${key}`);
+            });
         }
 
         function updateMacros(protein, carbs, fat) {
