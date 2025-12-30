@@ -1,5 +1,25 @@
 # Privacy & Data Storage - What You Need to Know
 
+## 💾 First Things First: Back Up Your Data
+
+**Your data is stored in your browser only. Here's how to protect it:**
+
+1. Open Settings (⚙️ button)
+2. Click **"Export Settings"** button
+3. Save the downloaded JSON file somewhere safe (Desktop, OneDrive, Dropbox, etc.)
+4. To restore later: Click **"Import Settings"** and select your file
+
+**Recommended:** Export after initial setup and whenever you make significant changes.
+
+**What's included in export:**
+- ✅ API key
+- ✅ All profile settings (age, weight, goals)
+- ✅ Macro targets
+- ✅ Medications & supplements
+- ❌ Historical daily macro data (last 30 days in localStorage only)
+
+---
+
 ## Where Your Data Lives
 
 **Everything is stored in YOUR BROWSER ONLY** - specifically in something called "localStorage".
@@ -9,27 +29,12 @@
 ✅ **Your data NEVER leaves your device**
 - API key
 - Settings (age, weight, goals, medications)
-- Daily macros
+- Daily macros (last 30 days)
 - Conversation history (last 10 messages only)
 
 ✅ **We don't have a database** - there's nowhere for your data to go
 
 ✅ **Total privacy** - nobody can see your data, not even us
-
-### 💾 Backup Your Data:
-
-**IMPORTANT:** Before clearing browser data or switching browsers:
-1. Open Settings (⚙️ button)
-2. Click **"Export Settings"** button
-3. Save the downloaded JSON file somewhere safe
-4. To restore: Click **"Import Settings"** and select your file
-
-**What's included in export:**
-- ✅ API key
-- ✅ All profile settings
-- ✅ Macro targets
-- ✅ Medications & supplements
-- ❌ Historical daily macro data (last 30 days are in localStorage only)
 
 ### Important Limitations:
 

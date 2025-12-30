@@ -51,17 +51,20 @@
 
 ## Privacy & Data
 
-**Everything stays in your browser:**
+**Everything stays in your browser for maximum privacy.**
+
+**💾 Protect Your Setup:**
+1. After completing setup, click **"Export Settings"** in Settings
+2. Save the backup file somewhere safe
+3. If you clear browser data or switch browsers, use **"Import Settings"** to restore
+
+**What's stored locally:**
 - Your API key
 - Your settings (weight, goals, medications)
-- Your daily macros
-- Your conversation history
+- Your daily macros (last 30 days)
+- Your conversation history (last 10 messages)
 
-**We never see your data.** No accounts, no servers, no tracking.
-
-**Important:** If you clear browser data or use a different browser, you'll need to set up again. No cloud backup.
-
-**💡 Pro Tip:** Click "Export Settings" in Settings to download a backup file. Keep it safe! You can restore anytime with "Import Settings".
+**We never see your data.** No accounts, no servers, no tracking. No cloud backup by design.
 
 ---
 

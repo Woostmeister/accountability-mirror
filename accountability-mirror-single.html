@@ -899,10 +899,10 @@
                     <div class="message-content">
                         <p>Welcome to your Accountability Mirror. I'm here to support your health and fitness journey with real-time advice, macro tracking, and motivation.</p>
                         <p>Tell me what you're eating, ask questions, share your struggles - let's work on this together.</p>
-                        <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(91, 142, 244, 0.2); font-size: 0.875rem; color: var(--text-secondary);"><strong style="color: var(--accent);">⚠️ Privacy Notice:</strong> All your data (API key, settings, macros) is stored in YOUR BROWSER ONLY. It never leaves your device. <strong>If you clear browser data or use a different browser, you'll need to set up again.</strong> No cloud sync, maximum privacy. <strong>💡 Tip: Use "Export Settings" in Settings to back up your data!</strong> <a href="https://github.com/Woostmeister/accountability-mirror/blob/main/PRIVACY.md" target="_blank" style="color: var(--accent); text-decoration: underline;">Read full privacy policy</a></p>
+                        <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(91, 142, 244, 0.2); font-size: 0.875rem; color: var(--text-secondary);"><strong style="color: var(--accent);">⚠️ Privacy Notice:</strong> All your data (API key, settings, macros) is stored in YOUR BROWSER ONLY for maximum privacy. <strong>💾 Important: Use "Export Settings" to back up your data regularly.</strong> Without a backup, clearing browser data or switching browsers means starting over. No cloud sync by design. <a href="https://github.com/Woostmeister/accountability-mirror/blob/main/PRIVACY.md" target="_blank" style="color: var(--accent); text-decoration: underline;">Read full privacy policy</a></p>
                     </div>
                 </div>
-                <div class="message system-message">
+                <div class="message system-message" id="first-time-message">
                     <div class="message-content">
                         <p style="font-weight: 600; margin-bottom: 0.5rem;">⚙️ First Time Here?</p>
                         <p style="font-size: 0.9rem;">Please configure your API key in Settings first. Click the ⚙️ Settings button on the left.</p>
@@ -1209,15 +1209,23 @@
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', () => {
-            initializeApp();
+            loadSettings(); // Load settings first
+            initializeApp(); // Then check API key and hide message if needed
             setupEventListeners();
-            loadSettings();
             updateDateDisplay();
             loadTodaysMacros();
         });
 
         function initializeApp() {
             console.log('Accountability Mirror initialized');
+            
+            // Hide "First Time Here?" message if API key is already configured
+            const apiKey = state.settings.apiKey;
+            const firstTimeMessage = document.getElementById('first-time-message');
+            
+            if (apiKey && apiKey.trim() !== '') {
+                firstTimeMessage.style.display = 'none';
+            }
         }
 
         // Event Listeners
