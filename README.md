@@ -51,9 +51,15 @@ See [Local Setup](#local-setup) below for running on your own computer.
 This means:
 - ✅ Total privacy - your data never leaves your device
 - ✅ No accounts, no passwords, no servers storing your health data
+- ✅ **Export your settings anytime** (click "Export Settings" in Settings modal)
 - ❌ No sync between devices
 - ❌ Clearing browser data = losing everything
 - ❌ Each browser needs separate setup
+
+**💡 Backup Strategy:**
+1. Click Settings → "Export Settings" to download a backup file
+2. Save it somewhere safe (Desktop, OneDrive, etc.)
+3. If you clear cache or switch browsers, use "Import Settings" to restore
 
 See [PRIVACY.md](PRIVACY.md) for complete details.
 

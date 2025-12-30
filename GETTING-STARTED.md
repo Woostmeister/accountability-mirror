@@ -61,6 +61,8 @@
 
 **Important:** If you clear browser data or use a different browser, you'll need to set up again. No cloud backup.
 
+**💡 Pro Tip:** Click "Export Settings" in Settings to download a backup file. Keep it safe! You can restore anytime with "Import Settings".
+
 ---
 
 ## Troubleshooting

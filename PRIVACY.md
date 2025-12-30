@@ -16,6 +16,21 @@
 
 ✅ **Total privacy** - nobody can see your data, not even us
 
+### 💾 Backup Your Data:
+
+**IMPORTANT:** Before clearing browser data or switching browsers:
+1. Open Settings (⚙️ button)
+2. Click **"Export Settings"** button
+3. Save the downloaded JSON file somewhere safe
+4. To restore: Click **"Import Settings"** and select your file
+
+**What's included in export:**
+- ✅ API key
+- ✅ All profile settings
+- ✅ Macro targets
+- ✅ Medications & supplements
+- ❌ Historical daily macro data (last 30 days are in localStorage only)
+
 ### Important Limitations:
 
 ⚠️ **Each browser is separate**
