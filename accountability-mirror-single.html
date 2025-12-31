@@ -924,15 +924,22 @@
 
             #chat-input {
                 font-size: 16px; /* Prevents iOS zoom on focus */
-                min-height: 60px;
-                max-height: 120px;
-                padding: 0.875rem 1rem;
+                min-height: 80px;
+                max-height: 140px;
+                padding: 1rem;
+                line-height: 1.5;
             }
 
             .send-btn,
             .photo-btn {
-                width: 48px;
-                height: 48px;
+                width: 56px;
+                height: 56px;
+                align-self: flex-end;
+            }
+
+            .input-wrapper {
+                gap: 0.75rem;
+                align-items: flex-end;
             }
 
             /* Modal adjustments */
