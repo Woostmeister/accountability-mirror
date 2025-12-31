@@ -485,6 +485,45 @@
             transform: translateY(0);
         }
 
+        .mic-btn {
+            width: 56px;
+            height: 56px;
+            background: var(--bg-tertiary);
+            border: 1px solid transparent;
+            border-radius: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0;
+        }
+
+        .mic-btn:hover {
+            background: var(--bg-secondary);
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .mic-btn.recording {
+            background: #ef4444;
+            border-color: #dc2626;
+            color: white;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .mic-btn:active {
+            transform: translateY(0);
+        }
+
         .photo-btn svg {
             stroke-width: 2.5;
         }
@@ -932,7 +971,8 @@
             }
 
             .send-btn,
-            .photo-btn {
+            .photo-btn,
+            .mic-btn {
                 width: 56px;
                 height: 56px;
                 align-self: flex-end;
@@ -1179,6 +1219,14 @@
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
                             <circle cx="12" cy="13" r="4"/>
+                        </svg>
+                    </button>
+                    <button id="mic-btn" class="mic-btn" title="Voice input">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                            <line x1="12" y1="19" x2="12" y2="23"/>
+                            <line x1="8" y1="23" x2="16" y2="23"/>
                         </svg>
                     </button>
                     <textarea 
@@ -1553,6 +1601,9 @@
             // Update deficit calculation when calorie fields change
             document.getElementById('maintenance-calories').addEventListener('input', updateDeficitCalculation);
             document.getElementById('calorie-goal').addEventListener('input', updateDeficitCalculation);
+
+            // Voice input
+            document.getElementById('mic-btn').addEventListener('click', toggleVoiceInput);
 
             // Mobile menu toggle
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -2633,6 +2684,79 @@ Keep responses conversational and not too long unless they ask for detailed info
                 console.error('Failed to copy:', err);
                 alert('Failed to copy to clipboard');
             });
+        }
+
+        // Voice input
+        let recognition = null;
+        let isRecording = false;
+
+        function toggleVoiceInput() {
+            const micBtn = document.getElementById('mic-btn');
+            const chatInput = document.getElementById('chat-input');
+
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('Sorry, your browser doesn\'t support voice input. Try Chrome, Edge, or Safari.');
+                return;
+            }
+
+            if (isRecording) {
+                // Stop recording
+                if (recognition) {
+                    recognition.stop();
+                }
+                micBtn.classList.remove('recording');
+                isRecording = false;
+                return;
+            }
+
+            // Start recording
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-GB'; // UK English
+
+            recognition.onstart = () => {
+                micBtn.classList.add('recording');
+                isRecording = true;
+                chatInput.placeholder = 'Listening...';
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                
+                // Append to existing text or replace if empty
+                if (chatInput.value.trim()) {
+                    chatInput.value += ' ' + transcript;
+                } else {
+                    chatInput.value = transcript;
+                }
+                
+                // Auto-resize textarea
+                chatInput.style.height = 'auto';
+                chatInput.style.height = chatInput.scrollHeight + 'px';
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                micBtn.classList.remove('recording');
+                isRecording = false;
+                chatInput.placeholder = 'Tell me what you ate, ask a question, or share how you\'re feeling...';
+                
+                if (event.error === 'not-allowed') {
+                    alert('Microphone access denied. Please allow microphone access in your browser settings.');
+                } else if (event.error !== 'no-speech') {
+                    alert('Voice input error: ' + event.error);
+                }
+            };
+
+            recognition.onend = () => {
+                micBtn.classList.remove('recording');
+                isRecording = false;
+                chatInput.placeholder = 'Tell me what you ate, ask a question, or share how you\'re feeling...';
+            };
+
+            recognition.start();
         }
     </script>
 </body>
