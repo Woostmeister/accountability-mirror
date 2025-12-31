@@ -889,9 +889,19 @@
                 line-height: 1.6;
             }
 
+            /* Show mobile instruction, hide desktop */
+            .mobile-instruction {
+                display: inline !important;
+            }
+
+            .desktop-instruction {
+                display: none !important;
+            }
+
             /* Input area fixed at bottom */
             .chat-input-container {
                 padding: 1rem;
+                padding-bottom: max(1rem, env(safe-area-inset-bottom)); /* Account for iPhone notch */
                 background: var(--bg-secondary);
                 border-top: 1px solid var(--border);
                 position: sticky;
@@ -914,7 +924,9 @@
 
             #chat-input {
                 font-size: 16px; /* Prevents iOS zoom on focus */
-                min-height: 48px;
+                min-height: 60px;
+                max-height: 120px;
+                padding: 0.875rem 1rem;
             }
 
             .send-btn,
@@ -996,6 +1008,17 @@
 
             .sidebar {
                 width: 260px;
+            }
+        }
+
+        /* Desktop - show desktop instruction, hide mobile */
+        @media (min-width: 769px) {
+            .desktop-instruction {
+                display: inline !important;
+            }
+
+            .mobile-instruction {
+                display: none !important;
             }
         }
     </style>
@@ -1118,13 +1141,21 @@
                     <div class="message-content">
                         <p>Welcome to your Accountability Mirror. I'm here to support your health and fitness journey with real-time advice, macro tracking, and motivation.</p>
                         <p>Tell me what you're eating, ask questions, share your struggles - let's work on this together.</p>
-                        <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(91, 142, 244, 0.2); font-size: 0.875rem; color: var(--text-secondary);"><strong style="color: var(--accent);">⚠️ Privacy Notice:</strong> All your data (API key, settings, macros) is stored in YOUR BROWSER ONLY for maximum privacy. <strong>💾 Important: Use "Export Settings" to back up your data regularly.</strong> Without a backup, clearing browser data or switching browsers means starting over. No cloud sync by design. <a href="https://github.com/Woostmeister/accountability-mirror/blob/main/PRIVACY.md" target="_blank" style="color: var(--accent); text-decoration: underline;">Read full privacy policy</a></p>
+                        <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(91, 142, 244, 0.2); font-size: 0.875rem; color: var(--text-secondary);">
+                            <strong style="color: var(--accent);">⚠️ Privacy Notice:</strong> Browser-only storage. 
+                            <strong>💾 Use "Export Settings" to back up.</strong> 
+                            <span id="privacy-details" style="display: none;">
+                                All your data (API key, settings, macros) is stored in YOUR BROWSER ONLY for maximum privacy. Without a backup, clearing browser data or switching browsers means starting over. No cloud sync by design.
+                            </span>
+                            <button onclick="document.getElementById('privacy-details').style.display = document.getElementById('privacy-details').style.display === 'none' ? 'inline' : 'none'; this.textContent = this.textContent === 'More' ? 'Less' : 'More';" style="background: none; border: none; color: var(--accent); cursor: pointer; text-decoration: underline; padding: 0; margin-left: 0.25rem; font-size: 0.875rem;">More</button>
+                            <a href="https://github.com/Woostmeister/accountability-mirror/blob/main/PRIVACY.md" target="_blank" style="color: var(--accent); text-decoration: underline; margin-left: 0.25rem;">Full policy</a>
+                        </p>
                     </div>
                 </div>
                 <div class="message system-message" id="first-time-message">
                     <div class="message-content">
                         <p style="font-weight: 600; margin-bottom: 0.5rem;">⚙️ First Time Here?</p>
-                        <p style="font-size: 0.9rem;">Please configure your API key in Settings first. Click the ⚙️ Settings button on the left.</p>
+                        <p style="font-size: 0.9rem;">Please configure your API key in Settings first. <span class="desktop-instruction">Click the ⚙️ Settings button on the left.</span><span class="mobile-instruction" style="display: none;">Tap the menu button (☰) then Settings.</span></p>
                         <p style="font-size: 0.875rem; margin-top: 0.75rem; color: var(--text-secondary);">
                             <strong>Need help?</strong> <a href="https://github.com/Woostmeister/accountability-mirror/blob/main/GETTING-STARTED.md" target="_blank" style="color: var(--accent); text-decoration: underline;">Getting Started Guide</a> • <a href="https://github.com/Woostmeister/accountability-mirror/blob/main/PRIVACY.md" target="_blank" style="color: var(--accent); text-decoration: underline;">Privacy Info</a>
                         </p>
