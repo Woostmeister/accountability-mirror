@@ -16,26 +16,23 @@ module.exports = async (req, res) => {
     return;
   }
 
-  // Only handle POST to /api/claude
+  // Only handle POST
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
     return;
   }
 
   try {
-    const requestData = req.body;
-    const apiKey = requestData.apiKey;
+    // Get the request body (Vercel handles parsing automatically)
+    const { apiKey, ...anthropicRequest } = req.body;
     
     if (!apiKey) {
       res.status(400).json({ error: 'API key is required' });
       return;
     }
 
-    // Remove API key from body before sending to Anthropic
-    delete requestData.apiKey;
-
     // Prepare request to Anthropic
-    const data = JSON.stringify(requestData);
+    const data = JSON.stringify(anthropicRequest);
     
     const options = {
       hostname: 'api.anthropic.com',
@@ -45,7 +42,7 @@ module.exports = async (req, res) => {
         'Content-Type': 'application/json',
         'x-api-key': apiKey,
         'anthropic-version': '2023-06-01',
-        'Content-Length': data.length
+        'Content-Length': Buffer.byteLength(data)
       }
     };
 
@@ -58,7 +55,13 @@ module.exports = async (req, res) => {
       });
 
       apiResponse.on('end', () => {
-        res.status(apiResponse.statusCode).json(JSON.parse(responseBody));
+        try {
+          const jsonResponse = JSON.parse(responseBody);
+          res.status(apiResponse.statusCode).json(jsonResponse);
+        } catch (e) {
+          console.error('Failed to parse Anthropic response:', responseBody);
+          res.status(500).json({ error: 'Invalid response from Anthropic API' });
+        }
       });
     });
 
