@@ -362,6 +362,7 @@
         .message-content {
             max-width: 700px;
             padding: 1.25rem 1.5rem;
+            padding-right: 5rem; /* Extra space for copy button */
             border-radius: 12px;
             font-size: 1.05rem;
             position: relative;
@@ -2605,7 +2606,19 @@ Keep responses conversational and not too long unless they ask for detailed info
             const messageContent = button.closest('.message-content');
             const rawText = messageContent.getAttribute('data-raw-text');
             
-            navigator.clipboard.writeText(rawText).then(() => {
+            // Strip markdown formatting
+            const plainText = rawText
+                .replace(/\*\*(.*?)\*\*/g, '$1')  // Remove bold **text**
+                .replace(/\*(.*?)\*/g, '$1')      // Remove italic *text*
+                .replace(/__(.*?)__/g, '$1')      // Remove bold __text__
+                .replace(/_(.*?)_/g, '$1')        // Remove italic _text_
+                .replace(/`(.*?)`/g, '$1')        // Remove inline code `text`
+                .replace(/#{1,6}\s/g, '')         // Remove headers #
+                .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')  // Convert [text](url) to text
+                .replace(/^\s*[-*+]\s+/gm, '')    // Remove list bullets
+                .replace(/^\s*\d+\.\s+/gm, '');   // Remove numbered lists
+            
+            navigator.clipboard.writeText(plainText).then(() => {
                 // Visual feedback
                 const label = button.querySelector('.copy-label');
                 const originalText = label.textContent;
