@@ -2529,11 +2529,17 @@ Keep responses conversational and not too long unless they ask for detailed info
                         
                         localStorage.setItem('macroTargets', JSON.stringify(targets));
                         
-                        // Reload settings into form
+                        // Reload settings into form (in case modal is open)
                         loadSettingsToForm();
                         updateMacroDisplay();
                         
-                        addAssistantMessage("Settings imported successfully! All your data has been restored.");
+                        // Close modal if open
+                        closeSettings();
+                        
+                        // Show success message with instruction to verify
+                        setTimeout(() => {
+                            addAssistantMessage("✅ Settings imported successfully! Your profile, macros, and API key have been restored. Open Settings to verify everything looks correct, then start tracking!");
+                        }, 100);
                         
                     } catch (error) {
                         console.error('Import error:', error);
