@@ -791,9 +791,196 @@
                 transform: translateY(-8px);
             }
         }
+
+        /* Mobile Responsive Design */
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+
+            /* Mobile menu toggle button */
+            .mobile-menu-btn {
+                display: block;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1000;
+                width: 48px;
+                height: 48px;
+                background: var(--bg-secondary);
+                border: 1px solid var(--accent);
+                border-radius: 12px;
+                color: var(--accent);
+                cursor: pointer;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                transition: all 0.2s ease;
+            }
+
+            .mobile-menu-btn:active {
+                transform: scale(0.95);
+            }
+
+            /* Hide sidebar by default on mobile, show as overlay */
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                bottom: 0;
+                width: 280px;
+                z-index: 1001;
+                transition: left 0.3s ease;
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+            }
+
+            .sidebar.mobile-open {
+                left: 0;
+            }
+
+            /* Add close button to sidebar on mobile */
+            .sidebar::before {
+                content: '×';
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: var(--bg-tertiary);
+                border-radius: 8px;
+                color: var(--text-secondary);
+                font-size: 1.5rem;
+                cursor: pointer;
+                z-index: 10;
+                line-height: 1;
+            }
+
+            /* Chat container takes full width */
+            .chat-container {
+                width: 100%;
+                padding-top: 4rem;
+            }
+
+            .chat-messages {
+                padding: 1rem;
+                padding-bottom: 8rem; /* Extra space for input area */
+            }
+
+            .message {
+                max-width: 100%;
+            }
+
+            /* Input area adjustments */
+            .chat-input-container {
+                padding: 1rem;
+            }
+
+            .input-wrapper {
+                gap: 0.5rem;
+            }
+
+            #chat-input {
+                font-size: 16px; /* Prevents iOS zoom on focus */
+                min-height: 48px;
+            }
+
+            .send-btn,
+            .photo-btn {
+                width: 48px;
+                height: 48px;
+            }
+
+            /* Modal adjustments */
+            .modal-content {
+                width: 95%;
+                max-height: 85vh;
+                margin: 1rem;
+            }
+
+            .modal-header {
+                padding: 1rem;
+            }
+
+            .modal-body {
+                padding: 1rem;
+            }
+
+            .modal-header h2 {
+                font-size: 1.25rem;
+            }
+
+            /* Form inputs larger for mobile */
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 16px; /* Prevents iOS zoom */
+                padding: 0.75rem;
+            }
+
+            /* Macro display in sidebar */
+            .macro-label {
+                font-size: 0.75rem;
+            }
+
+            .calories-display {
+                padding: 1rem;
+            }
+
+            .cal-value {
+                font-size: 1.25rem;
+            }
+
+            /* Weekly stats */
+            .weekly-stats {
+                padding: 1rem;
+            }
+
+            .weekly-stat-item {
+                font-size: 0.8125rem;
+            }
+
+            /* Action buttons */
+            .action-btn {
+                padding: 0.75rem;
+                font-size: 0.8125rem;
+            }
+
+            /* Settings link */
+            .settings-link {
+                padding-top: 1rem;
+            }
+        }
+
+        /* Very small phones */
+        @media (max-width: 380px) {
+            .chat-messages {
+                padding: 0.75rem;
+            }
+
+            .message-content {
+                font-size: 0.9rem;
+            }
+
+            .sidebar {
+                width: 260px;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Mobile menu button -->
+    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+    </button>
+
+    <!-- Mobile overlay (when sidebar is open) -->
+    <div class="mobile-overlay" id="mobile-overlay"></div>
+
     <div class="app-container">
         <!-- Sidebar with daily stats -->
         <aside class="sidebar">
@@ -915,7 +1102,7 @@
             
             <div class="chat-input-container">
                 <div class="input-wrapper">
-                    <input type="file" id="photo-input" accept="image/*" style="display: none;">
+                    <input type="file" id="photo-input" accept="image/*" capture="environment" style="display: none;">
                     <button id="photo-btn" class="photo-btn" title="Upload food photo">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
@@ -1294,6 +1481,46 @@
             // Update deficit calculation when calorie fields change
             document.getElementById('maintenance-calories').addEventListener('input', updateDeficitCalculation);
             document.getElementById('calorie-goal').addEventListener('input', updateDeficitCalculation);
+
+            // Mobile menu toggle
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+            const sidebar = document.querySelector('.sidebar');
+
+            function closeMobileSidebar() {
+                sidebar.classList.remove('mobile-open');
+                mobileOverlay.classList.remove('active');
+            }
+
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    sidebar.classList.toggle('mobile-open');
+                    mobileOverlay.classList.toggle('active');
+                });
+
+                mobileOverlay.addEventListener('click', closeMobileSidebar);
+
+                // Close sidebar when clicking the X (sidebar::before pseudo-element)
+                sidebar.addEventListener('click', (e) => {
+                    const rect = sidebar.getBoundingClientRect();
+                    // Check if click is in top-right area (where X button is)
+                    if (window.innerWidth <= 768 && 
+                        e.clientX > rect.right - 60 && 
+                        e.clientY < rect.top + 60) {
+                        closeMobileSidebar();
+                    }
+                });
+
+                // Close sidebar when clicking action buttons on mobile
+                const actionButtons = document.querySelectorAll('.action-btn, #btn-settings');
+                actionButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        if (window.innerWidth <= 768) {
+                            closeMobileSidebar();
+                        }
+                    });
+                });
+            }
             
             // Calculate plan button
             document.getElementById('calculate-plan').addEventListener('click', calculatePersonalizedPlan);
