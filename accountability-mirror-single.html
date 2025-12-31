@@ -962,26 +962,41 @@
                 gap: 0.5rem;
             }
 
+            /* Stack camera and mic vertically on mobile */
+            .input-buttons-left {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                align-self: flex-end;
+            }
+
             #chat-input {
                 font-size: 16px; /* Prevents iOS zoom on focus */
                 min-height: 100px;
                 max-height: 160px;
                 padding: 1rem;
                 line-height: 1.5;
+                flex: 1;
             }
 
-            .send-btn,
-            .photo-btn,
-            .mic-btn {
+            .send-btn {
                 width: 48px;
                 height: 48px;
                 align-self: flex-end;
                 flex-shrink: 0;
             }
 
+            .photo-btn,
+            .mic-btn {
+                width: 48px;
+                height: 48px;
+                flex-shrink: 0;
+            }
+
             .input-wrapper {
                 gap: 0.5rem;
                 align-items: flex-end;
+                display: flex;
             }
 
             /* Modal adjustments */
@@ -1068,6 +1083,11 @@
 
             .mobile-instruction {
                 display: none !important;
+            }
+
+            /* Keep buttons horizontal on desktop */
+            .input-buttons-left {
+                flex-direction: row;
             }
         }
     </style>
@@ -1215,20 +1235,22 @@
             <div class="chat-input-container">
                 <div class="input-wrapper">
                     <input type="file" id="photo-input" accept="image/*" capture="environment" style="display: none;">
-                    <button id="photo-btn" class="photo-btn" title="Upload food photo">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                            <circle cx="12" cy="13" r="4"/>
-                        </svg>
-                    </button>
-                    <button id="mic-btn" class="mic-btn" title="Voice input">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                            <line x1="12" y1="19" x2="12" y2="23"/>
-                            <line x1="8" y1="23" x2="16" y2="23"/>
-                        </svg>
-                    </button>
+                    <div class="input-buttons-left">
+                        <button id="photo-btn" class="photo-btn" title="Upload food photo">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                                <circle cx="12" cy="13" r="4"/>
+                            </svg>
+                        </button>
+                        <button id="mic-btn" class="mic-btn" title="Voice input">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                <line x1="12" y1="19" x2="12" y2="23"/>
+                                <line x1="8" y1="23" x2="16" y2="23"/>
+                            </svg>
+                        </button>
+                    </div>
                     <textarea 
                         id="chat-input" 
                         placeholder="Tell me what you ate, ask a question, or share how you're feeling..."
