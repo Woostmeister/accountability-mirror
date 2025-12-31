@@ -458,6 +458,14 @@
             margin: 0 auto;
         }
 
+        /* Button container - horizontal by default (desktop) */
+        .input-buttons-left {
+            display: flex;
+            flex-direction: row;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
         .photo-btn {
             width: 56px;
             height: 56px;
@@ -1085,10 +1093,7 @@
                 display: none !important;
             }
 
-            /* Keep buttons horizontal on desktop */
-            .input-buttons-left {
-                flex-direction: row;
-            }
+            /* Buttons are already horizontal by default, nothing to override */
         }
     </style>
 </head>
