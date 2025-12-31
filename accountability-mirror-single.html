@@ -1192,10 +1192,10 @@
                     </button>
                 </div>
                 <div id="photo-preview" style="display: none; margin-top: 0.5rem;">
-                    <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: var(--bg-tertiary); border-radius: 8px;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: var(--bg-tertiary); border-radius: 8px; position: relative;">
                         <img id="preview-img" style="max-width: 100px; max-height: 100px; border-radius: 4px;">
-                        <span id="preview-name" style="flex: 1; font-size: 0.9rem; color: var(--text-secondary);"></span>
-                        <button id="remove-photo" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.2rem;">&times;</button>
+                        <span style="flex: 1; font-size: 0.875rem; color: var(--text-secondary);">Photo attached</span>
+                        <button id="remove-photo" style="background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: all 0.2s;" onmouseover="this.style.background='var(--bg-secondary)'; this.style.color='var(--text-primary)'" onmouseout="this.style.background='var(--bg-primary)'; this.style.color='var(--text-secondary)'">&times;</button>
                     </div>
                 </div>
             </div>
@@ -1671,7 +1671,6 @@
                     
                     // Show preview
                     document.getElementById('preview-img').src = compressedDataUrl;
-                    document.getElementById('preview-name').textContent = file.name;
                     document.getElementById('photo-preview').style.display = 'block';
                 };
                 img.src = e.target.result;
