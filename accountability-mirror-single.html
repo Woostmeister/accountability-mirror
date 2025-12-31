@@ -1632,19 +1632,49 @@
                 return;
             }
             
-            // Read file as base64
+            // Compress image before uploading
             const reader = new FileReader();
             reader.onload = (e) => {
-                state.uploadedPhoto = {
-                    data: e.target.result.split(',')[1], // Get base64 part only
-                    type: file.type,
-                    name: file.name
+                const img = new Image();
+                img.onload = () => {
+                    // Create canvas to resize image
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Calculate new dimensions (max 1200px on longest side)
+                    let width = img.width;
+                    let height = img.height;
+                    const maxSize = 1200;
+                    
+                    if (width > height && width > maxSize) {
+                        height = (height * maxSize) / width;
+                        width = maxSize;
+                    } else if (height > maxSize) {
+                        width = (width * maxSize) / height;
+                        height = maxSize;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    // Draw and compress
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Convert to JPEG with quality 0.8 (good balance of quality/size)
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                    
+                    state.uploadedPhoto = {
+                        data: compressedDataUrl.split(',')[1], // Get base64 part only
+                        type: 'image/jpeg',
+                        name: file.name
+                    };
+                    
+                    // Show preview
+                    document.getElementById('preview-img').src = compressedDataUrl;
+                    document.getElementById('preview-name').textContent = file.name;
+                    document.getElementById('photo-preview').style.display = 'block';
                 };
-                
-                // Show preview
-                document.getElementById('preview-img').src = e.target.result;
-                document.getElementById('preview-name').textContent = file.name;
-                document.getElementById('photo-preview').style.display = 'block';
+                img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
