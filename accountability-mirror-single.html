@@ -793,12 +793,18 @@
         }
 
         /* Mobile Responsive Design */
+        .mobile-menu-btn {
+            display: none; /* Hidden by default */
+        }
+
         @media (max-width: 768px) {
             .app-container {
                 flex-direction: column;
+                height: 100vh;
+                height: 100dvh; /* Dynamic viewport height for mobile browsers */
             }
 
-            /* Mobile menu toggle button */
+            /* Mobile menu toggle button - only on mobile */
             .mobile-menu-btn {
                 display: block;
                 position: fixed;
@@ -856,15 +862,41 @@
                 line-height: 1;
             }
 
-            /* Chat container takes full width */
+            /* Chat container takes full width and height */
             .chat-container {
                 width: 100%;
-                padding-top: 4rem;
+                height: 100vh;
+                height: 100dvh;
+                display: flex;
+                flex-direction: column;
+                padding-top: 0;
             }
 
             .chat-messages {
+                flex: 1;
+                padding: 5rem 1rem 1rem 1rem;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .message {
+                max-width: 100%;
+                margin-bottom: 1.5rem;
+            }
+
+            .message-content {
+                font-size: 0.9375rem;
+                line-height: 1.6;
+            }
+
+            /* Input area fixed at bottom */
+            .chat-input-container {
                 padding: 1rem;
-                padding-bottom: 8rem; /* Extra space for input area */
+                background: var(--bg-secondary);
+                border-top: 1px solid var(--border);
+                position: sticky;
+                bottom: 0;
+                flex-shrink: 0;
             }
 
             .message {
