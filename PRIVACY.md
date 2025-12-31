@@ -4,7 +4,9 @@
 
 **Your data is stored in your browser only. Here's how to protect it:**
 
-1. Open Settings (⚙️ button)
+1. Open Settings
+   - **Desktop:** Click ⚙️ button (bottom-left)
+   - **Mobile:** Tap ☰ menu → Settings
 2. Click **"Export Settings"** button
 3. Save the downloaded JSON file somewhere safe (Desktop, OneDrive, Dropbox, etc.)
 4. To restore later: Click **"Import Settings"** and select your file

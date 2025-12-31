@@ -10,7 +10,7 @@ A conversational AI-powered health and fitness accountability system with medica
 
 **Just visit:** https://accountability-mirror.vercel.app
 
-1. Click **Settings** (bottom left)
+1. Open **Settings** (bottom-left on desktop, tap ☰ menu on mobile)
 2. Get your API key at [console.anthropic.com](https://console.anthropic.com) (~2 minutes)
 3. Enter your API key and profile details
 4. Start tracking!
@@ -30,11 +30,13 @@ See [Local Setup](#local-setup) below for running on your own computer.
 - **Conversational AI Coach**: Real-time advice, motivation, and support from Claude AI
 - **Macro Tracking**: Automatic calculation of protein, carbs, fat, and calories from natural language
 - **Photo Upload**: Upload food labels or supplement bottles for automatic macro extraction and safety checks
+- **Voice Input**: Hands-free logging with speech recognition (mobile & desktop)
+- **Mobile-Responsive**: Optimized interface for phones, tablets, and desktop
 - **Calorie Deficit Tracking**: Set maintenance calories and target deficit for weight loss
 - **Medication Safety**: Built-in drug-supplement interaction checking (especially for Tamoxifen and other medications)
 - **Supplement Analysis**: Evidence-based supplement recommendations with contraindication warnings
 - **Privacy First**: All data stored locally, API calls only for AI responses
-- **Works Offline-First**: Local server eliminates CORS issues
+- **Export/Import**: Back up your settings and restore on any device
 
 ## What Makes This Special
 

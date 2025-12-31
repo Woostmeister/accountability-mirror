@@ -21,7 +21,9 @@
 
 ### Step 2: Add API Key to the App
 
-1. **Open Settings** (button at bottom left)
+1. **Open Settings** 
+   - **Desktop:** Click ⚙ button (bottom-left sidebar)
+   - **Mobile:** Tap ☰ menu button (top-left), then Settings
 2. **Paste your API key** in the "API Key" field
 3. **Fill in your profile:**
    - Age, weight, height, sex
