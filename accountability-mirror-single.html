@@ -1196,6 +1196,7 @@
                 </div>
                 
                 <div class="quick-actions">
+                    <button class="action-btn" id="btn-food-log">📋 Food Log</button>
                     <button class="action-btn" id="btn-today">How's today?</button>
                     <button class="action-btn" id="btn-suggestions">Meal suggestions</button>
                     <button class="action-btn" id="btn-supplements">About supplements</button>
@@ -1504,6 +1505,39 @@
         </div>
     </div>
     
+    <!-- Food Log Modal -->
+    <div class="modal" id="food-log-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Food Log</h2>
+                <button class="close-modal" id="close-food-log">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <div>
+                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.25rem;" id="food-log-date">Today's Meals</h3>
+                        <p style="font-size: 0.875rem; color: var(--text-secondary);" id="food-log-totals">0 calories, 0g protein, 0g carbs, 0g fat</p>
+                    </div>
+                    <button onclick="clearAllMeals()" style="padding: 0.5rem 1rem; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-secondary); border-radius: 8px; cursor: pointer; font-size: 0.875rem; transition: all 0.2s;" onmouseover="this.style.borderColor='#ef4444'; this.style.color='#ef4444'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'">
+                        Clear All
+                    </button>
+                </div>
+                
+                <div id="food-log-list" style="max-height: 400px; overflow-y: auto;">
+                    <!-- Food items will be inserted here -->
+                </div>
+                
+                <div id="food-log-empty" style="text-align: center; padding: 3rem 1rem; color: var(--text-tertiary); display: none;">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 1rem; opacity: 0.5;">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                    <p>No meals logged yet</p>
+                    <p style="font-size: 0.875rem; margin-top: 0.5rem;">Chat with your AI coach to log food</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script>
         // State management
         const state = {
@@ -1521,6 +1555,7 @@
                 daysLogged: 0,
                 days: {} // Store data for each day of the week
             },
+            foodLog: [], // Individual meal entries for today
             conversationHistory: [],
             uploadedPhoto: null, // Store photo for next message
             settings: {
@@ -1606,6 +1641,10 @@
             });
             
             // Settings
+            document.getElementById('btn-food-log').addEventListener('click', () => {
+                openFoodLog();
+            });
+            
             document.getElementById('btn-settings').addEventListener('click', () => {
                 openSettings();
             });
@@ -1618,10 +1657,20 @@
                 saveSettings();
             });
             
+            document.getElementById('close-food-log').addEventListener('click', () => {
+                closeFoodLog();
+            });
+            
             // Close modal on outside click
             document.getElementById('settings-modal').addEventListener('click', (e) => {
                 if (e.target.id === 'settings-modal') {
                     closeSettings();
+                }
+            });
+            
+            document.getElementById('food-log-modal').addEventListener('click', (e) => {
+                if (e.target.id === 'food-log-modal') {
+                    closeFoodLog();
                 }
             });
             
@@ -1764,20 +1813,35 @@
             
             if (stored) {
                 const data = JSON.parse(stored);
-                state.macros = data;
+                
+                // Handle both old format (just macros) and new format (macros + foodLog)
+                if (data.macros) {
+                    state.macros = data.macros;
+                    state.foodLog = data.foodLog || [];
+                } else {
+                    // Old format - just macros object
+                    state.macros = data;
+                    state.foodLog = [];
+                }
+                
                 updateMacroDisplay();
             } else {
                 state.macros.protein.current = 0;
                 state.macros.carbs.current = 0;
                 state.macros.fat.current = 0;
                 state.calories.current = 0;
+                state.foodLog = [];
                 updateMacroDisplay();
             }
         }
 
         function saveTodaysMacros() {
             const today = new Date().toDateString();
-            localStorage.setItem(`macros_${today}`, JSON.stringify(state.macros));
+            const dataToSave = {
+                macros: state.macros,
+                foodLog: state.foodLog
+            };
+            localStorage.setItem(`macros_${today}`, JSON.stringify(dataToSave));
             
             // Cleanup old data (keep last 30 days only)
             cleanupOldMacroData();
@@ -1812,7 +1876,21 @@
             });
         }
 
-        function updateMacros(protein, carbs, fat) {
+        function updateMacros(protein, carbs, fat, description = '', mealType = 'Snack') {
+            // Add to food log
+            const foodItem = {
+                id: Date.now(), // Unique ID for editing/deleting
+                mealType: mealType,
+                description: description || 'Meal',
+                protein: protein,
+                carbs: carbs,
+                fat: fat,
+                calories: Math.round((protein * 4) + (carbs * 4) + (fat * 9))
+            };
+            
+            state.foodLog.push(foodItem);
+            
+            // Update totals
             state.macros.protein.current += protein;
             state.macros.carbs.current += carbs;
             state.macros.fat.current += fat;
@@ -1993,7 +2071,13 @@
                 addAssistantMessage(response.message);
                 
                 if (response.macros) {
-                    updateMacros(response.macros.protein, response.macros.carbs, response.macros.fat);
+                    updateMacros(
+                        response.macros.protein, 
+                        response.macros.carbs, 
+                        response.macros.fat,
+                        response.macros.description || 'Meal',
+                        response.macros.mealType || 'Snack'
+                    );
                 }
             } catch (error) {
                 removeTypingIndicator();
@@ -2155,11 +2239,15 @@ When the user mentions food they've eaten:
 1. Estimate the macros (protein, carbs, fat in grams)
 2. Provide feedback on how it fits their goals
 3. Respond with your message AND include macro data in this exact format at the end:
-   MACROS: protein=X carbs=Y fat=Z
+   MACROS: protein=X carbs=Y fat=Z meal=MEALTYPE desc=DESCRIPTION
+   
+   Where:
+   - MEALTYPE is one of: breakfast, lunch, dinner, snack
+   - DESCRIPTION is a brief description (e.g., "Scrambled eggs with toast", "Chicken salad")
 
 For example: "That's a great breakfast choice! Scrambled eggs with toast gives you solid protein to start the day.
 
-MACROS: protein=25 carbs=30 fat=15"
+MACROS: protein=25 carbs=30 fat=15 meal=breakfast desc=Scrambled eggs with toast"
 
 When analyzing uploaded photos of food labels or supplements:
 1. Read all visible text carefully
@@ -2301,7 +2389,8 @@ Keep responses conversational and not too long unless they ask for detailed info
         }
 
         function parseAIResponse(text) {
-            const macroMatch = text.match(/MACROS:\s*protein=(\d+(?:\.\d+)?)\s*carbs=(\d+(?:\.\d+)?)\s*fat=(\d+(?:\.\d+)?)/i);
+            // Enhanced parsing to extract meal type and description
+            const macroMatch = text.match(/MACROS:\s*protein=(\d+(?:\.\d+)?)\s*carbs=(\d+(?:\.\d+)?)\s*fat=(\d+(?:\.\d+)?)\s*(?:meal=(breakfast|lunch|dinner|snack))?\s*(?:desc=([^|]+))?/i);
             
             let macros = null;
             let message = text;
@@ -2310,10 +2399,15 @@ Keep responses conversational and not too long unless they ask for detailed info
                 macros = {
                     protein: parseFloat(macroMatch[1]),
                     carbs: parseFloat(macroMatch[2]),
-                    fat: parseFloat(macroMatch[3])
+                    fat: parseFloat(macroMatch[3]),
+                    mealType: macroMatch[4] || 'Snack',
+                    description: macroMatch[5] || 'Meal'
                 };
                 
-                message = text.replace(/MACROS:.*$/i, '').trim();
+                // Capitalize meal type
+                macros.mealType = macros.mealType.charAt(0).toUpperCase() + macros.mealType.slice(1).toLowerCase();
+                
+                message = text.replace(/MACROS:.*$/im, '').trim();
             }
             
             return { message, macros };
@@ -2784,6 +2878,156 @@ Keep responses conversational and not too long unless they ask for detailed info
             };
 
             recognition.start();
+        }
+
+        // Food Log Management
+        function openFoodLog() {
+            document.getElementById('food-log-modal').classList.add('active');
+            renderFoodLog();
+        }
+
+        function closeFoodLog() {
+            document.getElementById('food-log-modal').classList.remove('active');
+        }
+
+        function renderFoodLog() {
+            const list = document.getElementById('food-log-list');
+            const empty = document.getElementById('food-log-empty');
+            const totals = document.getElementById('food-log-totals');
+            
+            if (state.foodLog.length === 0) {
+                list.style.display = 'none';
+                empty.style.display = 'block';
+                totals.textContent = '0 calories, 0g protein, 0g carbs, 0g fat';
+                return;
+            }
+            
+            list.style.display = 'block';
+            empty.style.display = 'none';
+            
+            // Calculate totals
+            const totalCal = state.calories.current;
+            const totalProtein = state.macros.protein.current;
+            const totalCarbs = state.macros.carbs.current;
+            const totalFat = state.macros.fat.current;
+            
+            totals.textContent = `${totalCal} cal, ${totalProtein.toFixed(0)}g protein, ${totalCarbs.toFixed(0)}g carbs, ${totalFat.toFixed(0)}g fat`;
+            
+            // Group by meal type
+            const meals = {
+                'Breakfast': [],
+                'Lunch': [],
+                'Dinner': [],
+                'Snack': []
+            };
+            
+            state.foodLog.forEach(item => {
+                if (!meals[item.mealType]) {
+                    meals[item.mealType] = [];
+                }
+                meals[item.mealType].push(item);
+            });
+            
+            // Render
+            let html = '';
+            Object.keys(meals).forEach(mealType => {
+                if (meals[mealType].length > 0) {
+                    html += `
+                        <div style="margin-bottom: 1.5rem;">
+                            <h4 style="font-size: 0.875rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">${mealType}</h4>
+                            ${meals[mealType].map(item => `
+                                <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 500; margin-bottom: 0.25rem;">${item.description}</div>
+                                        <div style="font-size: 0.8125rem; color: var(--text-secondary);">
+                                            ${item.calories} cal • ${item.protein.toFixed(0)}g protein • ${item.carbs.toFixed(0)}g carbs • ${item.fat.toFixed(0)}g fat
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; gap: 0.5rem; margin-left: 1rem;">
+                                        <button onclick="editFoodItem(${item.id})" style="background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-secondary); padding: 0.5rem; border-radius: 6px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'" title="Edit">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                            </svg>
+                                        </button>
+                                        <button onclick="deleteFoodItem(${item.id})" style="background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-secondary); padding: 0.5rem; border-radius: 6px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#ef4444'; this.style.color='#ef4444'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'" title="Delete">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="3 6 5 6 21 6"/>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+            });
+            
+            list.innerHTML = html;
+        }
+
+        function editFoodItem(id) {
+            const item = state.foodLog.find(i => i.id === id);
+            if (!item) return;
+            
+            const mealType = prompt('Meal type (Breakfast/Lunch/Dinner/Snack):', item.mealType) || item.mealType;
+            const description = prompt('Description:', item.description) || item.description;
+            const protein = parseFloat(prompt('Protein (g):', item.protein)) || item.protein;
+            const carbs = parseFloat(prompt('Carbs (g):', item.carbs)) || item.carbs;
+            const fat = parseFloat(prompt('Fat (g):', item.fat)) || item.fat;
+            
+            // Update item
+            item.mealType = mealType;
+            item.description = description;
+            item.protein = protein;
+            item.carbs = carbs;
+            item.fat = fat;
+            item.calories = Math.round((protein * 4) + (carbs * 4) + (fat * 9));
+            
+            // Recalculate totals
+            recalculateTotals();
+            renderFoodLog();
+        }
+
+        function deleteFoodItem(id) {
+            if (!confirm('Delete this meal?')) return;
+            
+            state.foodLog = state.foodLog.filter(i => i.id !== id);
+            recalculateTotals();
+            renderFoodLog();
+        }
+
+        function clearAllMeals() {
+            if (!confirm('Clear all meals for today? This cannot be undone.')) return;
+            
+            state.foodLog = [];
+            state.macros.protein.current = 0;
+            state.macros.carbs.current = 0;
+            state.macros.fat.current = 0;
+            state.calories.current = 0;
+            
+            updateMacroDisplay();
+            saveTodaysMacros();
+            renderFoodLog();
+        }
+
+        function recalculateTotals() {
+            let protein = 0, carbs = 0, fat = 0;
+            
+            state.foodLog.forEach(item => {
+                protein += item.protein;
+                carbs += item.carbs;
+                fat += item.fat;
+            });
+            
+            state.macros.protein.current = protein;
+            state.macros.carbs.current = carbs;
+            state.macros.fat.current = fat;
+            state.calories.current = Math.round((protein * 4) + (carbs * 4) + (fat * 9));
+            
+            updateMacroDisplay();
+            saveTodaysMacros();
         }
     </script>
 </body>
