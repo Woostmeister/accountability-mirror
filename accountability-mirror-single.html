@@ -1546,6 +1546,59 @@
         </div>
     </div>
     
+    <!-- Edit Food Item Modal -->
+    <div class="modal" id="edit-food-modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Edit Meal</h2>
+                <button class="close-modal" id="close-edit-food">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="edit-meal-type">Meal Type</label>
+                    <select id="edit-meal-type" style="width: 100%; padding: 0.75rem; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 0.9375rem;">
+                        <option value="Breakfast">Breakfast</option>
+                        <option value="Lunch">Lunch</option>
+                        <option value="Dinner">Dinner</option>
+                        <option value="Snack">Snack</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-description">Description</label>
+                    <input type="text" id="edit-description" placeholder="e.g., Scrambled eggs with toast" style="width: 100%; padding: 0.75rem; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 0.9375rem;">
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="edit-protein">Protein (g)</label>
+                        <input type="number" id="edit-protein" step="0.1" style="width: 100%; padding: 0.75rem; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 0.9375rem;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-carbs">Carbs (g)</label>
+                        <input type="number" id="edit-carbs" step="0.1" style="width: 100%; padding: 0.75rem; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 0.9375rem;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-fat">Fat (g)</label>
+                        <input type="number" id="edit-fat" step="0.1" style="width: 100%; padding: 0.75rem; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 0.9375rem;">
+                    </div>
+                </div>
+                
+                <div style="padding: 1rem; background: var(--bg-tertiary); border-radius: 8px; margin-top: 1rem;">
+                    <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem;">Calculated Calories:</div>
+                    <div id="edit-calculated-calories" style="font-size: 1.5rem; font-weight: 600; color: var(--text-primary);">0 cal</div>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button id="save-food-edit" class="save-btn" style="flex: 1;">Save Changes</button>
+                    <button onclick="closeEditFoodModal()" style="flex: 1; padding: 0.75rem 1.5rem; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-secondary); border-radius: 8px; cursor: pointer; font-size: 0.9375rem; transition: all 0.2s;">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script>
         // State management
         const state = {
@@ -1670,6 +1723,19 @@
                 closeFoodLog();
             });
             
+            document.getElementById('close-edit-food').addEventListener('click', () => {
+                closeEditFoodModal();
+            });
+            
+            document.getElementById('save-food-edit').addEventListener('click', () => {
+                saveEditedFood();
+            });
+            
+            // Update calculated calories when macros change
+            ['edit-protein', 'edit-carbs', 'edit-fat'].forEach(id => {
+                document.getElementById(id).addEventListener('input', updateCalculatedCalories);
+            });
+            
             // Close modal on outside click
             document.getElementById('settings-modal').addEventListener('click', (e) => {
                 if (e.target.id === 'settings-modal') {
@@ -1680,6 +1746,12 @@
             document.getElementById('food-log-modal').addEventListener('click', (e) => {
                 if (e.target.id === 'food-log-modal') {
                     closeFoodLog();
+                }
+            });
+            
+            document.getElementById('edit-food-modal').addEventListener('click', (e) => {
+                if (e.target.id === 'edit-food-modal') {
+                    closeEditFoodModal();
                 }
             });
             
@@ -2033,17 +2105,38 @@
                 const dayData = localStorage.getItem(`macros_${dateStr}`);
                 
                 if (dayData) {
-                    const data = JSON.parse(dayData);
-                    const dayCalories = (data.protein.current * 4) + (data.carbs.current * 4) + (data.fat.current * 9);
-                    
-                    if (dayCalories > 0) {
-                        state.weeklyData.totalCalories += Math.round(dayCalories);
-                        state.weeklyData.totalProtein += data.protein.current;
-                        state.weeklyData.daysLogged++;
-                        state.weeklyData.days[dateStr] = {
-                            calories: dayCalories,
-                            protein: data.protein.current
-                        };
+                    try {
+                        const data = JSON.parse(dayData);
+                        
+                        // Handle both new format (with macros wrapper) and old format
+                        let macros;
+                        if (data.macros) {
+                            // New format
+                            macros = data.macros;
+                        } else {
+                            // Old format - data is the macros object
+                            macros = data;
+                        }
+                        
+                        // Safety checks for nested structure
+                        const proteinCurrent = (macros.protein && macros.protein.current) || 0;
+                        const carbsCurrent = (macros.carbs && macros.carbs.current) || 0;
+                        const fatCurrent = (macros.fat && macros.fat.current) || 0;
+                        
+                        const dayCalories = (proteinCurrent * 4) + (carbsCurrent * 4) + (fatCurrent * 9);
+                        
+                        if (dayCalories > 0) {
+                            state.weeklyData.totalCalories += Math.round(dayCalories);
+                            state.weeklyData.totalProtein += proteinCurrent;
+                            state.weeklyData.daysLogged++;
+                            state.weeklyData.days[dateStr] = {
+                                calories: dayCalories,
+                                protein: proteinCurrent
+                            };
+                        }
+                    } catch (err) {
+                        console.error('Error parsing weekly data for', dateStr, err);
+                        // Skip this day and continue
                     }
                 }
             }
@@ -2677,6 +2770,24 @@ Keep responses conversational and not too long unless they ask for detailed info
         }
 
         function exportSettings() {
+            // Collect food log data from last 30 days
+            const foodLogData = {};
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('macros_')) {
+                    const dateStr = key.replace('macros_', '');
+                    const keyDate = new Date(dateStr);
+                    
+                    // Include last 30 days
+                    if (keyDate >= thirtyDaysAgo) {
+                        foodLogData[dateStr] = localStorage.getItem(key);
+                    }
+                }
+            }
+            
             const exportData = {
                 settings: state.settings,
                 macroTargets: {
@@ -2688,8 +2799,9 @@ Keep responses conversational and not too long unless they ask for detailed info
                     calories: state.calories.target,
                     maintenance: state.calories.maintenance
                 },
+                foodLogData: foodLogData, // Include food logs
                 exportDate: new Date().toISOString(),
-                version: '1.0'
+                version: '2.0' // Increment version
             };
             
             // Create downloadable JSON file
@@ -2698,11 +2810,11 @@ Keep responses conversational and not too long unless they ask for detailed info
             const url = URL.createObjectURL(dataBlob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = `accountability-mirror-settings-${new Date().toISOString().split('T')[0]}.json`;
+            link.download = `accountability-mirror-backup-${new Date().toISOString().split('T')[0]}.json`;
             link.click();
             URL.revokeObjectURL(url);
             
-            addAssistantMessage("Settings exported! Your backup file has been downloaded. Keep it safe to restore your settings later.");
+            addAssistantMessage("✅ Full backup exported! Includes settings, macro targets, and last 30 days of food logs. Keep it safe!");
         }
 
         function importSettings() {
@@ -2741,6 +2853,19 @@ Keep responses conversational and not too long unless they ask for detailed info
                         
                         localStorage.setItem('macroTargets', JSON.stringify(targets));
                         
+                        // Import food log data (v2.0+)
+                        if (importData.foodLogData) {
+                            let daysImported = 0;
+                            Object.keys(importData.foodLogData).forEach(dateStr => {
+                                localStorage.setItem(`macros_${dateStr}`, importData.foodLogData[dateStr]);
+                                daysImported++;
+                            });
+                            console.log(`Imported ${daysImported} days of food logs`);
+                        }
+                        
+                        // Reload today's data
+                        loadTodaysMacros();
+                        
                         // Reload settings into form (in case modal is open)
                         loadSettingsToForm();
                         updateMacroDisplay();
@@ -2749,8 +2874,9 @@ Keep responses conversational and not too long unless they ask for detailed info
                         closeSettings();
                         
                         // Show success message with instruction to verify
+                        const foodLogMsg = importData.foodLogData ? ` and ${Object.keys(importData.foodLogData).length} days of food logs` : '';
                         setTimeout(() => {
-                            addAssistantMessage("✅ Settings imported successfully! Your profile, macros, and API key have been restored. Open Settings to verify everything looks correct, then start tracking!");
+                            addAssistantMessage(`✅ Full backup restored! Your profile, macros, API key${foodLogMsg} have been imported. Check Food Log to see your history!`);
                         }, 100);
                         
                     } catch (error) {
@@ -2939,20 +3065,46 @@ Keep responses conversational and not too long unless they ask for detailed info
             // Load data for selected date
             const stored = localStorage.getItem(`macros_${state.currentViewDate}`);
             let foodLog = [];
-            let macros = { protein: { current: 0 }, carbs: { current: 0 }, fat: { current: 0 } };
+            let macros = { 
+                protein: { current: 0 }, 
+                carbs: { current: 0 }, 
+                fat: { current: 0 } 
+            };
             let calories = 0;
             
             if (stored) {
-                const data = JSON.parse(stored);
-                if (data.macros) {
-                    foodLog = data.foodLog || [];
-                    macros = data.macros;
-                    calories = Math.round((macros.protein.current * 4) + (macros.carbs.current * 4) + (macros.fat.current * 9));
-                } else {
-                    // Old format
-                    macros = data;
-                    foodLog = [];
-                    calories = Math.round((macros.protein.current * 4) + (macros.carbs.current * 4) + (macros.fat.current * 9));
+                try {
+                    const data = JSON.parse(stored);
+                    if (data.macros) {
+                        // New format with foodLog
+                        foodLog = data.foodLog || [];
+                        macros = data.macros;
+                        // Ensure nested structure exists
+                        macros.protein = macros.protein || { current: 0 };
+                        macros.carbs = macros.carbs || { current: 0 };
+                        macros.fat = macros.fat || { current: 0 };
+                        calories = Math.round(
+                            ((macros.protein.current || 0) * 4) + 
+                            ((macros.carbs.current || 0) * 4) + 
+                            ((macros.fat.current || 0) * 9)
+                        );
+                    } else {
+                        // Old format - just macros object
+                        macros = data;
+                        foodLog = [];
+                        // Ensure nested structure exists
+                        macros.protein = macros.protein || { current: 0 };
+                        macros.carbs = macros.carbs || { current: 0 };
+                        macros.fat = macros.fat || { current: 0 };
+                        calories = Math.round(
+                            ((macros.protein.current || 0) * 4) + 
+                            ((macros.carbs.current || 0) * 4) + 
+                            ((macros.fat.current || 0) * 9)
+                        );
+                    }
+                } catch (err) {
+                    console.error('Error parsing food log data:', err);
+                    // Use defaults
                 }
             }
             
@@ -2973,11 +3125,11 @@ Keep responses conversational and not too long unless they ask for detailed info
             list.style.display = 'block';
             empty.style.display = 'none';
             
-            // Calculate totals
-            const totalCal = calories;
-            const totalProtein = macros.protein.current;
-            const totalCarbs = macros.carbs.current;
-            const totalFat = macros.fat.current;
+            // Calculate totals with safety checks
+            const totalCal = calories || 0;
+            const totalProtein = (macros.protein && macros.protein.current) || 0;
+            const totalCarbs = (macros.carbs && macros.carbs.current) || 0;
+            const totalFat = (macros.fat && macros.fat.current) || 0;
             
             totals.textContent = `${totalCal} cal, ${totalProtein.toFixed(0)}g protein, ${totalCarbs.toFixed(0)}g carbs, ${totalFat.toFixed(0)}g fat`;
             
@@ -3037,27 +3189,60 @@ Keep responses conversational and not too long unless they ask for detailed info
             list.innerHTML = html;
         }
 
+        let currentEditingItemId = null;
+
         function editFoodItem(id) {
             const item = state.foodLog.find(i => i.id === id);
             if (!item) return;
             
-            const mealType = prompt('Meal type (Breakfast/Lunch/Dinner/Snack):', item.mealType) || item.mealType;
-            const description = prompt('Description:', item.description) || item.description;
-            const protein = parseFloat(prompt('Protein (g):', item.protein)) || item.protein;
-            const carbs = parseFloat(prompt('Carbs (g):', item.carbs)) || item.carbs;
-            const fat = parseFloat(prompt('Fat (g):', item.fat)) || item.fat;
+            currentEditingItemId = id;
             
-            // Update item
-            item.mealType = mealType;
-            item.description = description;
-            item.protein = protein;
-            item.carbs = carbs;
-            item.fat = fat;
-            item.calories = Math.round((protein * 4) + (carbs * 4) + (fat * 9));
+            // Populate form
+            document.getElementById('edit-meal-type').value = item.mealType;
+            document.getElementById('edit-description').value = item.description;
+            document.getElementById('edit-protein').value = item.protein;
+            document.getElementById('edit-carbs').value = item.carbs;
+            document.getElementById('edit-fat').value = item.fat;
             
-            // Recalculate totals
+            // Calculate and show initial calories
+            updateCalculatedCalories();
+            
+            // Show modal
+            document.getElementById('edit-food-modal').classList.add('active');
+        }
+
+        function closeEditFoodModal() {
+            document.getElementById('edit-food-modal').classList.remove('active');
+            currentEditingItemId = null;
+        }
+
+        function updateCalculatedCalories() {
+            const protein = parseFloat(document.getElementById('edit-protein').value) || 0;
+            const carbs = parseFloat(document.getElementById('edit-carbs').value) || 0;
+            const fat = parseFloat(document.getElementById('edit-fat').value) || 0;
+            
+            const calories = Math.round((protein * 4) + (carbs * 4) + (fat * 9));
+            document.getElementById('edit-calculated-calories').textContent = `${calories} cal`;
+        }
+
+        function saveEditedFood() {
+            if (!currentEditingItemId) return;
+            
+            const item = state.foodLog.find(i => i.id === currentEditingItemId);
+            if (!item) return;
+            
+            // Get values from form
+            item.mealType = document.getElementById('edit-meal-type').value;
+            item.description = document.getElementById('edit-description').value;
+            item.protein = parseFloat(document.getElementById('edit-protein').value) || 0;
+            item.carbs = parseFloat(document.getElementById('edit-carbs').value) || 0;
+            item.fat = parseFloat(document.getElementById('edit-fat').value) || 0;
+            item.calories = Math.round((item.protein * 4) + (item.carbs * 4) + (item.fat * 9));
+            
+            // Recalculate totals and save
             recalculateTotals();
             renderFoodLog();
+            closeEditFoodModal();
         }
 
         function deleteFoodItem(id) {
