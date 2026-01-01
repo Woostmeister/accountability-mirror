@@ -1513,12 +1513,20 @@
                 <button class="close-modal" id="close-food-log">&times;</button>
             </div>
             <div class="modal-body">
+                <!-- Date selector -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-secondary);">View Date:</label>
+                    <select id="food-log-date-select" onchange="loadFoodLogForDate(this.value)" style="width: 100%; padding: 0.75rem; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 0.9375rem;">
+                        <!-- Options populated by JS -->
+                    </select>
+                </div>
+                
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                     <div>
-                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.25rem;" id="food-log-date">Today's Meals</h3>
+                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.25rem;" id="food-log-date-title">Today's Meals</h3>
                         <p style="font-size: 0.875rem; color: var(--text-secondary);" id="food-log-totals">0 calories, 0g protein, 0g carbs, 0g fat</p>
                     </div>
-                    <button onclick="clearAllMeals()" style="padding: 0.5rem 1rem; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-secondary); border-radius: 8px; cursor: pointer; font-size: 0.875rem; transition: all 0.2s;" onmouseover="this.style.borderColor='#ef4444'; this.style.color='#ef4444'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'">
+                    <button id="clear-all-btn" onclick="clearAllMeals()" style="padding: 0.5rem 1rem; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-secondary); border-radius: 8px; cursor: pointer; font-size: 0.875rem; transition: all 0.2s;" onmouseover="this.style.borderColor='#ef4444'; this.style.color='#ef4444'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'">
                         Clear All
                     </button>
                 </div>
@@ -1556,6 +1564,7 @@
                 days: {} // Store data for each day of the week
             },
             foodLog: [], // Individual meal entries for today
+            currentViewDate: null, // For viewing different dates in food log
             conversationHistory: [],
             uploadedPhoto: null, // Store photo for next message
             settings: {
@@ -2883,6 +2892,8 @@ Keep responses conversational and not too long unless they ask for detailed info
         // Food Log Management
         function openFoodLog() {
             document.getElementById('food-log-modal').classList.add('active');
+            state.currentViewDate = new Date().toDateString(); // Default to today
+            populateDateSelector();
             renderFoodLog();
         }
 
@@ -2890,12 +2901,69 @@ Keep responses conversational and not too long unless they ask for detailed info
             document.getElementById('food-log-modal').classList.remove('active');
         }
 
+        function populateDateSelector() {
+            const select = document.getElementById('food-log-date-select');
+            const today = new Date();
+            const options = [];
+            
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dateString = date.toDateString();
+                
+                // Format date nicely
+                const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                const dayName = dayNames[date.getDay()];
+                const formattedDate = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+                
+                const label = i === 0 ? 'Today' : i === 1 ? 'Yesterday' : `${dayName} ${formattedDate}`;
+                
+                options.push(`<option value="${dateString}" ${dateString === state.currentViewDate ? 'selected' : ''}>${label}</option>`);
+            }
+            
+            select.innerHTML = options.join('');
+        }
+
+        function loadFoodLogForDate(dateString) {
+            state.currentViewDate = dateString;
+            renderFoodLog();
+        }
+
         function renderFoodLog() {
             const list = document.getElementById('food-log-list');
             const empty = document.getElementById('food-log-empty');
             const totals = document.getElementById('food-log-totals');
+            const title = document.getElementById('food-log-date-title');
+            const clearBtn = document.getElementById('clear-all-btn');
             
-            if (state.foodLog.length === 0) {
+            // Load data for selected date
+            const stored = localStorage.getItem(`macros_${state.currentViewDate}`);
+            let foodLog = [];
+            let macros = { protein: { current: 0 }, carbs: { current: 0 }, fat: { current: 0 } };
+            let calories = 0;
+            
+            if (stored) {
+                const data = JSON.parse(stored);
+                if (data.macros) {
+                    foodLog = data.foodLog || [];
+                    macros = data.macros;
+                    calories = Math.round((macros.protein.current * 4) + (macros.carbs.current * 4) + (macros.fat.current * 9));
+                } else {
+                    // Old format
+                    macros = data;
+                    foodLog = [];
+                    calories = Math.round((macros.protein.current * 4) + (macros.carbs.current * 4) + (macros.fat.current * 9));
+                }
+            }
+            
+            // Update title
+            const isToday = state.currentViewDate === new Date().toDateString();
+            title.textContent = isToday ? "Today's Meals" : "Meals";
+            
+            // Only show clear button for today
+            clearBtn.style.display = isToday ? 'block' : 'none';
+            
+            if (foodLog.length === 0) {
                 list.style.display = 'none';
                 empty.style.display = 'block';
                 totals.textContent = '0 calories, 0g protein, 0g carbs, 0g fat';
@@ -2906,10 +2974,10 @@ Keep responses conversational and not too long unless they ask for detailed info
             empty.style.display = 'none';
             
             // Calculate totals
-            const totalCal = state.calories.current;
-            const totalProtein = state.macros.protein.current;
-            const totalCarbs = state.macros.carbs.current;
-            const totalFat = state.macros.fat.current;
+            const totalCal = calories;
+            const totalProtein = macros.protein.current;
+            const totalCarbs = macros.carbs.current;
+            const totalFat = macros.fat.current;
             
             totals.textContent = `${totalCal} cal, ${totalProtein.toFixed(0)}g protein, ${totalCarbs.toFixed(0)}g carbs, ${totalFat.toFixed(0)}g fat`;
             
@@ -2921,7 +2989,7 @@ Keep responses conversational and not too long unless they ask for detailed info
                 'Snack': []
             };
             
-            state.foodLog.forEach(item => {
+            foodLog.forEach(item => {
                 if (!meals[item.mealType]) {
                     meals[item.mealType] = [];
                 }
@@ -2943,6 +3011,7 @@ Keep responses conversational and not too long unless they ask for detailed info
                                             ${item.calories} cal • ${item.protein.toFixed(0)}g protein • ${item.carbs.toFixed(0)}g carbs • ${item.fat.toFixed(0)}g fat
                                         </div>
                                     </div>
+                                    ${isToday ? `
                                     <div style="display: flex; gap: 0.5rem; margin-left: 1rem;">
                                         <button onclick="editFoodItem(${item.id})" style="background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-secondary); padding: 0.5rem; border-radius: 6px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'" title="Edit">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2957,6 +3026,7 @@ Keep responses conversational and not too long unless they ask for detailed info
                                             </svg>
                                         </button>
                                     </div>
+                                    ` : ''}
                                 </div>
                             `).join('')}
                         </div>
